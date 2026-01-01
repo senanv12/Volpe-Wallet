@@ -1,0 +1,134 @@
+/* --- CONTAINER --- */
+.auth-container {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  background-color: #050505;
+  z-index: 9999;
+}
+
+.background-layer { position: absolute; inset: 0; z-index: 0; }
+
+.close-auth {
+  position: absolute; top: 30px; right: 30px;
+  background: rgba(255, 255, 255, 0.1); border: none; color: white;
+  padding: 10px; border-radius: 50%; cursor: pointer; z-index: 20;
+  transition: 0.3s;
+}
+.close-auth:hover { background: rgba(255, 255, 255, 0.2); transform: rotate(90deg); }
+
+/* --- CARD --- */
+.auth-card {
+  position: relative; z-index: 10;
+  width: 100%; max-width: 420px;
+  padding: 40px;
+  background: rgba(20, 20, 25, 0.6); /* Daha tünd, şüşə effekti */
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  text-align: center;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  transition: height 0.3s ease;
+}
+
+.auth-header h1 { color: white; font-size: 28px; margin-bottom: 8px; font-weight: 700; }
+.auth-header p { color: #94a3b8; font-size: 14px; margin-bottom: 25px; }
+
+/* --- STEPPER DIZAYN --- */
+.stepper-indicator {
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 30px; gap: 10px;
+}
+.step-dot {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #6b7280;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: bold;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.step-dot.active {
+    border-color: #2dd4bf; color: #2dd4bf;
+    background: rgba(45, 212, 191, 0.1);
+    box-shadow: 0 0 15px rgba(45, 212, 191, 0.2);
+}
+.step-dot.completed {
+    background: #2dd4bf; border-color: #2dd4bf; color: #000;
+}
+
+.step-line {
+    width: 60px; height: 2px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+    position: relative;
+    overflow: hidden;
+}
+.step-line.filled { background: #2dd4bf; }
+
+/* --- INPUTS --- */
+.input-group { position: relative; margin-bottom: 16px; width: 100%; }
+.icon-wrapper {
+  position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+  color: #64748b; pointer-events: none; z-index: 2;
+}
+
+.input-group input {
+  width: 100%; padding: 14px 14px 14px 50px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  color: white; font-size: 16px; outline: none;
+  transition: all 0.3s;
+}
+.input-group input:focus {
+  border-color: #2dd4bf; background: rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 0 4px rgba(45, 212, 191, 0.1);
+}
+
+/* Username Xüsusi Stil */
+.username-group .at-prefix {
+    position: absolute; left: 48px; top: 50%; transform: translateY(-50%);
+    color: #2dd4bf; font-weight: bold; font-size: 16px; z-index: 2;
+}
+.username-input { padding-left: 65px !important; }
+
+/* --- BUTTONS & ACTIONS --- */
+.form-actions { display: flex; gap: 10px; margin-top: 20px; }
+
+.submit-btn {
+  flex: 1; padding: 14px;
+  background: linear-gradient(135deg, #2dd4bf, #0d9488);
+  color: #0f172a; border: none; border-radius: 12px;
+  font-weight: 700; font-size: 16px;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  cursor: pointer; transition: 0.3s;
+}
+.submit-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(45, 212, 191, 0.3); }
+.submit-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+
+.prev-btn {
+    width: 50px; display: flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px; color: white; cursor: pointer; transition: 0.3s;
+}
+.prev-btn:hover { background: rgba(255,255,255,0.1); }
+
+/* --- FOOTER & ERROR --- */
+.auth-footer { margin-top: 25px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); }
+.toggle-btn { background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 14px; transition: 0.3s; }
+.toggle-btn:hover { color: #2dd4bf; }
+
+.error-message {
+    background: rgba(239, 68, 68, 0.15); color: #fca5a5;
+    padding: 10px; border-radius: 8px; margin-bottom: 20px; font-size: 13px;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+/* --- ANIMATIONS --- */
+@keyframes slideIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+.animate-in { animation: slideIn 0.4s ease-out forwards; }

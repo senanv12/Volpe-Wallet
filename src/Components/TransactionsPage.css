@@ -1,0 +1,63 @@
+.transactions-page {
+  padding: 80px 5%; background-color: #0d1117; min-height: 100vh;
+}
+.transactions-container { max-width: 1200px; margin: 0 auto; }
+.transactions-title { color: #fff; font-size: 36px; margin-bottom: 30px; }
+
+.transactions-content {
+  display: grid; grid-template-columns: 1.5fr 1fr; gap: 40px;
+}
+
+/* LEFT COLUMN */
+.filter-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+.filter-tab {
+  background: rgba(255,255,255,0.05); border: none; color: #fff; padding: 8px 16px; border-radius: 8px; cursor: pointer; transition: 0.3s;
+}
+.filter-tab.active { background: #2dd4bf; color: #000; }
+
+.transactions-list {
+  background: #161b22; border-radius: 16px; padding: 20px; min-height: 400px;
+}
+.transaction-item {
+  display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid #30363d;
+}
+.transaction-name { color: #fff; margin: 0; }
+.transaction-category { color: #8b949e; font-size: 12px; margin: 0; }
+.transaction-amount.income { color: #2dd4bf; }
+.transaction-amount.expense { color: #f87171; }
+
+/* RIGHT COLUMN - STACKED CARDS */
+.stack-container h3 { color: #fff; margin-bottom: 20px; }
+.cards-stack {
+  position: relative;
+  height: 500px; /* Kartların yerləşməsi üçün hündürlük */
+  perspective: 1000px;
+}
+
+.stacked-card {
+  position: absolute;
+  left: 0;
+  width: 320px;
+  height: 200px;
+  transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+  cursor: pointer;
+  /* Başlanğıcda yüngül kölgə və kiçilmə */
+  transform: scale(0.95) translateY(0);
+  filter: brightness(0.7);
+  box-shadow: 0 -5px 10px rgba(0,0,0,0.3);
+}
+
+/* Seçilən Kart Önə Gəlir */
+.stacked-card.active {
+  transform: scale(1.05) translateY(-20px); /* Böyüyür və biraz yuxarı qalxır */
+  filter: brightness(1);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+  z-index: 999 !important; /* Ən üstdə */
+}
+
+/* Hover effekti */
+.stacked-card:hover:not(.active) {
+  transform: translateX(10px); /* Bir az sağa çıxır ki, seçilə bilsin */
+  filter: brightness(0.9);
+}
+

@@ -1,0 +1,781 @@
+/* --- CONTAINER --- */
+.input-card-container {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #0d1117;
+    font-family: 'Inter', sans-serif;
+    color: #fff;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.form-wrapper { width: 100%; max-width: 900px; }
+
+.content-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 60px;
+    flex-wrap: wrap;
+}
+
+/* --- SCENE & SIZES --- */
+.card-scene {
+    perspective: 1000px;
+    transition: all 0.5s ease;
+    position: relative;
+    cursor: pointer;
+    margin: 0 auto;
+}
+.card-scene.landscape-mode { width: 380px; height: 240px; }
+.card-scene.portrait-mode { width: 240px; height: 380px; }
+
+.hint-text {
+    text-align: center; margin-top: 15px; font-size: 12px; color: #6b7280;
+}
+
+/* --- CARD GENERAL --- */
+.virtual-card {
+    width: 100%; height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border-radius: 16px; /* Kapital kartı küncləri biraz daha kəskindir */
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+}
+.virtual-card.is-flipped { transform: rotateY(180deg); }
+.card-face {
+    position: absolute; width: 100%; height: 100%;
+    backface-visibility: hidden;
+    border-radius: 16px;
+    overflow: hidden;
+}
+.card-back { transform: rotateY(180deg); }
+
+/* ORTAQ: Chip, Visa */
+.chip {
+    width: 45px; height: 35px;
+    background: linear-gradient(135deg, #cbd5e1, #94a3b8);
+    border-radius: 6px;
+}
+.visa-logo {
+    font-style: italic; font-weight: 900; font-size: 26px; text-align: right;
+}
+
+/* =========================================
+   KAPITAL BANK (Birbank Cashback) STİLİ
+   ========================================= */
+.kapital-style {
+    background: #1a1a1a; /* Mat qara */
+    border: none;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+}
+
+/* --- ÖN TƏRƏF (FRONT) --- */
+.kapital-front-design {
+    width: 100%; height: 100%;
+    position: relative;
+    background: #1a1a1a;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header: Logo + Contactless */
+.kb-header {
+    padding: 25px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 5;
+}
+.birbank-logo {
+    font-size: 20px;
+    font-weight: 600; /* Medium/Semibold */
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.logo-icon {
+    color: #fff; font-size: 18px; transform: scaleY(1.2);
+}
+.contactless-icon svg { opacity: 0.9; margin-left: 2px;}
+
+/* Qırmızı Fiqur (Ortada) */
+.red-diagonal-shape {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) rotate(-15deg);
+    width: 100px;
+    height: 380px; /* Kartdan uzun */
+    background: #e62e3d; /* Birbank Qırmızısı */
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 60px;
+    box-shadow: 0 10px 30px rgba(230, 46, 61, 0.3);
+    z-index: 1;
+}
+
+/* Chip qırmızı fiqurun içində */
+.chip-inside {
+    width: 45px; height: 45px;
+    background: #d4d4d4; /* Gümüşü */
+    border-radius: 8px;
+    position: relative;
+    transform: rotate(15deg); /* Fiqurun əksinə çeviririk ki düz dursun */
+    overflow: hidden;
+    border: 1px solid #999;
+}
+.chip-line {
+    position: absolute; border: 1px solid #888;
+    width: 100%; height: 100%; opacity: 0.5;
+}
+.chip-line:nth-child(1) { top: 33%; border-top: 1px solid #666; height: 0; }
+.chip-line:nth-child(2) { left: 33%; border-left: 1px solid #666; width: 0; }
+.chip-line:nth-child(3) { transform: rotate(45deg); width: 200%; top: -50%; left: -50%; border:none; border-bottom: 1px solid #666; }
+
+/* Visa Silver Logo */
+.visa-logo-silver {
+    position: absolute;
+    bottom: 20px; right: 20px;
+    font-style: italic; font-weight: 900; font-size: 28px;
+    color: #fff;
+    z-index: 5;
+    letter-spacing: 1px;
+}
+
+/* --- ARXA TƏRƏF (BACK) --- */
+.kapital-back-design {
+    width: 100%; height: 100%;
+    background: #181818;
+    display: flex;
+    position: relative;
+}
+
+/* Sol Boz Zolaq */
+.silver-side-strip {
+    width: 40px;
+    height: 100%;
+    background: linear-gradient(to right, #cfcfcf, #e6e6e6, #cfcfcf);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.vertical-text {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-size: 6px;
+    color: #444;
+    white-space: nowrap;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+/* Sağ Məzmun Sahəsi */
+.kb-back-content {
+    flex-grow: 1;
+    padding: 20px 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Top: Recycle & QR */
+.kb-top-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+.recycle-section {
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+}
+.recycle-icon { font-size: 18px; color: #ccc; }
+.recycle-section span, .qr-section span {
+    font-size: 6px; color: #aaa; text-align: center; line-height: 1.2;
+}
+
+.qr-section { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.qr-box {
+    width: 35px; height: 35px; background: #fff; padding: 2px;
+    display: flex; align-items: center; justify-content: center;
+}
+.qr-box::before {
+    content: ''; width: 100%; height: 100%;
+    background-image: repeating-linear-gradient(45deg, #000 0, #000 2px, transparent 2px, transparent 4px),
+                      repeating-linear-gradient(-45deg, #000 0, #000 2px, transparent 2px, transparent 4px);
+    opacity: 0.8;
+}
+.qr-red-dot {
+    position: absolute; width: 4px; height: 8px; background: #e62e3d; z-index: 2;
+}
+
+/* Name */
+.kb-name-section {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #fff;
+    margin-bottom: 20px;
+    letter-spacing: 0.5px;
+    padding-left: 5px;
+}
+
+/* Numbers (Stacked) */
+.kb-number-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-left: 15px; /* Nömrələr biraz sağda */
+    margin-bottom: 20px;
+}
+.kb-num-chunk {
+    font-family: 'Inter', sans-serif; /* Şəkildə monospace deyil, bold sans-serif-dir */
+    font-size: 18px;
+    font-weight: 800;
+    position: relative;
+    width: fit-content;
+}
+.num-underline {
+    position: absolute;
+    bottom: -4px; left: 0;
+    width: 100%; height: 1px;
+    background: rgba(255,255,255,0.2);
+    transform: rotate(-2deg); /* Yüngül əyri xətlər */
+}
+
+/* Details: Exp & CVV */
+.kb-details-row {
+    display: flex;
+    padding-left: 15px;
+    margin-bottom: auto; /* Footer-i aşağı itələmək üçün */
+}
+.kb-col { display: flex; align-items: center; gap: 8px; }
+.ml-15 { margin-left: 20px; }
+
+.kb-label-tiny {
+    font-size: 6px; color: #aaa; text-transform: uppercase; line-height: 1.2;
+}
+.kb-val-bold {
+    font-size: 13px; font-weight: 800; letter-spacing: 0.5px;
+}
+.cursor-pointer { cursor: pointer; }
+
+/* Footer */
+.kb-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+.dove-hologram {
+    position: absolute;
+    right: 0; bottom: 30px;
+    font-size: 24px;
+    filter: grayscale(100%) brightness(150%);
+    opacity: 0.8;
+    text-shadow: 0 0 5px silver;
+}
+.footer-info {
+    width: 100%;
+    text-align: center;
+    border-top: 1px solid #333;
+    padding-top: 10px;
+}
+.azn-text {
+    font-weight: 800; font-size: 12px; margin-bottom: 3px;
+}
+.issuer-text {
+    font-size: 6px; color: #666;
+}
+
+/* --- LEOBANK & DEFAULT --- */
+/* (Əvvəlki kodlardan qalan hissələr, eynilə saxlanılıb) */
+.leobank-style {
+    background: #000; border: 2px solid #a855f7;
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.2);
+}
+.leobank-front-design {
+    padding: 25px; height: 100%; background: #080808; color: white;
+    display: flex; flex-direction: column; justify-content: space-between;
+}
+.leo-header { display: flex; justify-content: space-between; align-items: center; }
+.leo-brand { font-size: 24px; font-weight: bold; }
+.leobank-back-design {
+    background: #080808; height: 100%; width: 100%;
+    display: flex; flex-direction: column; color: #fff;
+}
+.magnetic-strip {
+    width: 100%; height: 50px; background: #1a1a1a; margin-top: 25px;
+}
+.leo-main-number {
+    font-family: 'Consolas', monospace; font-size: 26px; text-align: center; margin-top: 25px;
+}
+.leo-footer-row {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    padding: 0 35px; margin-top: auto; margin-bottom: 30px;
+}
+.leo-cvv-pill {
+    background: rgba(40, 40, 40, 0.8); border-radius: 50px; padding: 6px 14px;
+    min-width: 60px; height: 32px; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; border: 1px solid #333;
+}
+.leo-cvv-pill.revealed { border-color: #a855f7; }
+.emoji-mask { font-size: 18px; }
+
+/* Default */
+.default-style {
+    background: linear-gradient(135deg, #374151, #1f2937); border: 1px solid rgba(255,255,255,0.1);
+}
+.default-front-design { padding: 25px; height: 100%; display: flex; flex-direction: column; justify-content: space-between; }
+.num-front { font-family: 'Courier New', monospace; font-size: 24px; }
+.default-back-wrapper { background: inherit; height: 100%; border-radius: 16px; overflow: hidden; }
+.black-strip { width: 100%; height: 45px; background: #000; margin-top: 25px; }
+.cvv-strip {
+    background: #fff; color: #000; text-align: right; padding: 5px 10px;
+    border-radius: 4px; font-weight: bold; width: 50px; margin-left: auto;
+}
+.horizontal-back-content { padding: 0 25px; margin-top: 15px; }
+
+/* FORM */
+.input-form {
+    background: #161b22; padding: 30px; border-radius: 16px;
+    width: 100%; max-width: 400px; border: 1px solid #30363d;
+}
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; font-size: 12px; color: #8b949e; margin-bottom: 6px; }
+.form-group input {
+    width: 100%; background: #0d1117; border: 1px solid #30363d;
+    padding: 12px; border-radius: 8px; color: white; box-sizing: border-box; font-size: 16px;
+}
+.form-row { display: flex; gap: 15px; }
+.add-btn {
+    width: 100%; padding: 14px; background: #2dd4bf; border: none;
+    border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 16px;
+}
+.add-btn:hover { background: #14b8a6; }
+
+
+/* Mövcud kodlar olduğu kimi qalır... */
+
+/* =========================================
+   3. ABB TAMKART STİLİ (4127)
+   ========================================= */
+.abb-style {
+    background: #111;
+    border: 1px solid #333;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    font-family: 'Inter', sans-serif;
+}
+
+.abb-front-design {
+    width: 100%;
+    height: 100%;
+    padding: 25px;
+    position: relative;
+    background: #111;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+}
+
+/* Nöqtəli Fon Effekti (Sağ tərəfdəki dalğa) */
+.abb-dots-bg {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 70%;
+    height: 100%;
+    background-image: radial-gradient(#333 1px, transparent 1px);
+    background-size: 10px 10px;
+    mask-image: linear-gradient(to left, rgba(0,0,0,1), rgba(0,0,0,0));
+    -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,1), rgba(0,0,0,0));
+    opacity: 0.5;
+    z-index: 0;
+}
+
+/* Header: Mastercard & ABB */
+.abb-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+}
+
+/* Mastercard Logo (CSS ilə dairələr) */
+.mastercard-logo {
+    display: flex;
+    position: relative;
+}
+.mc-circle {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+}
+.mc-red { background: #eb001b; opacity: 0.9; }
+.mc-orange { background: #f79e1b; margin-left: -12px; opacity: 0.9; }
+
+/* ABB Logo */
+.abb-brand-logo {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 20px;
+    font-weight: bold;
+}
+.abb-icon {
+    font-size: 24px;
+    transform: rotate(15deg);
+}
+
+/* "tam." yazısı - Yaşıl kontur */
+.tam-text-container {
+    position: relative;
+    z-index: 2;
+    margin-top: 20px;
+    display: flex;
+    align-items: baseline;
+}
+.tam-text {
+    font-family: 'Arial', sans-serif; /* Və ya daha yumru bir font */
+    font-size: 80px;
+    font-weight: 900;
+    color: transparent; /* İçi boş */
+    -webkit-text-stroke: 2px #4ade80; /* Yaşıl kontur */
+    letter-spacing: -2px;
+    line-height: 1;
+}
+.tam-dot {
+    font-size: 80px;
+    color: #4ade80; /* İçi dolu yaşıl nöqtə */
+    line-height: 1;
+}
+
+.contactless-right {
+    position: absolute;
+    right: 25px;
+    top: 55%;
+    transform: translateY(-50%);
+    opacity: 0.8;
+}
+
+/* Footer: Number, Name, Expiry */
+.abb-footer-info {
+    position: relative;
+    z-index: 2;
+    margin-top: auto;
+}
+.abb-number {
+    font-family: 'Courier New', monospace;
+    font-size: 22px;
+    letter-spacing: 2px;
+    margin-bottom: 15px;
+    font-weight: bold;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+}
+.abb-bottom-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+.abb-name {
+    font-size: 14px;
+    text-transform: uppercase;
+    font-weight: 600;
+    max-width: 60%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.abb-expiry {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+.abb-label {
+    font-size: 8px;
+    opacity: 0.8;
+    margin-bottom: 2px;
+}
+.abb-date-val {
+    font-size: 16px;
+    font-weight: bold;
+    font-family: 'Courier New', monospace;
+}
+
+/* ABB Arxa Tərəf */
+.abb-back-wrapper {
+    background: #111;
+    height: 100%;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+}
+.abb-back-text {
+    margin-top: 20px;
+    font-size: 10px;
+    color: #666;
+    text-align: center;
+    line-height: 1.5;
+}
+
+/* --- Mövcud stillərə kiçik düzəlişlər --- */
+/* input-card-container və s. olduğu kimi qalır */
+
+/* --- InputCard.css --- */
+
+/* ... digər kodlar ... */
+
+/* =========================================
+   2. KAPITAL BANK STİLİ (YENİLƏNİB)
+   ========================================= */
+/* --- KAPITAL BANK RED STYLE --- */
+.kapital-style {
+    background: #e62e3d; /* Birbank Qırmızısı */
+    border-radius: 16px;
+    box-shadow: 0 15px 40px rgba(230, 46, 61, 0.4);
+}
+
+.kapital-front-design-red {
+    padding: 25px; height: 100%; display: flex; flex-direction: column; justify-content: space-between; color: white;
+}
+.birbank-logo-white { font-size: 22px; font-weight: bold; }
+.visa-logo-white { font-size: 24px; font-weight: 900; font-style: italic; }
+.chip-silver { width: 45px; height: 35px; background: #e2e8f0; border-radius: 6px; }
+
+.kb-number-red-bg { font-family: 'Courier New', monospace; font-size: 20px; letter-spacing: 2px; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+.kb-details-row { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 10px; }
+.kb-name-red { text-transform: uppercase; font-size: 14px; font-weight: 600; }
+.kb-expiry-red { font-family: 'Courier New', monospace; font-size: 16px; }
+
+.kapital-back-design-red { background: #cc2533; height: 100%; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; }
+.kb-cvv-box { background: white; color: black; padding: 5px 10px; border-radius: 4px; display: inline-block; margin: 20px; text-align: center; width: 60px; align-self: flex-end; }
+
+/* ... kapital bankın daxili stilləri olduğu kimi qalır ... */
+
+
+/* =========================================
+   3. ABB TAMKART STİLİ (YENİLƏNİB)
+   ========================================= */
+.abb-style {
+    background: #111;
+    /* YAŞIL BORDER və KÖLGƏ */
+    border: 2px solid #4ade80;
+    box-shadow: 0 0 25px rgba(74, 222, 128, 0.3); /* Yaşıl parıltı */
+
+    /* Digər xüsusiyyətlər */
+    border-radius: 16px;
+    font-family: 'Inter', sans-serif;
+    transform-style: preserve-3d;
+    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* ... abb kartın daxili stilləri olduğu kimi qalır ... */
+
+
+/* --- InputCard.css (Əlavələr) --- */
+
+/* Mövcud CSS kodları qalır (Kapital, ABB, Leobank) ... */
+
+/* =========================================
+   4. DEFAULT KARTLARI (Network Based)
+   ========================================= */
+
+/* Ümumi Default Kart */
+.default-generic {
+    background: linear-gradient(135deg, #374151, #1f2937);
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+}
+
+/* 1. VISA (Başlayır: 4) - Tünd Göy */
+.default-visa {
+    background: linear-gradient(135deg, #1a237e, #0d47a1);
+    border: 1px solid #2962ff;
+    box-shadow: 0 0 25px rgba(41, 98, 255, 0.4);
+}
+
+/* 2. MASTERCARD (Başlayır: 5) - Narıncı/Tünd Qırmızı */
+.default-master {
+    background: linear-gradient(135deg, #b71c1c, #e65100);
+    border: 1px solid #ff6d00;
+    box-shadow: 0 0 25px rgba(255, 109, 0, 0.4);
+}
+
+/* 3. AMEX (Başlayır: 3) - Zümrüd Yaşılı */
+.default-amex {
+    background: linear-gradient(135deg, #004d40, #00695c);
+    border: 1px solid #1de9b6;
+    box-shadow: 0 0 25px rgba(29, 233, 182, 0.3);
+}
+
+/* Logo Yerləşimi */
+.network-logo-container {
+    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Amex Logo Stili */
+.amex-logo {
+    font-weight: 900;
+    font-size: 18px;
+    letter-spacing: -1px;
+    border: 2px solid white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.1);
+}
+
+/* Default Kartın Arxası üçün rəng uyğunlaşması */
+.default-visa .default-back-wrapper { background: linear-gradient(135deg, #1a237e, #0d47a1); }
+.default-master .default-back-wrapper { background: linear-gradient(135deg, #b71c1c, #e65100); }
+.default-amex .default-back-wrapper { background: linear-gradient(135deg, #004d40, #00695c); }
+
+.default-back-wrapper {
+    height: 100%;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+/* Mövcud stillər olduğu kimi qalır */
+.default-front-design {
+    padding: 25px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.num-front {
+    font-family: 'Courier New', monospace;
+    font-size: 24px;
+    letter-spacing: 2px;
+    text-shadow: 0 2px 2px rgba(0,0,0,0.3);
+}
+
+
+/* --- CONTAINER --- */
+.input-card-container {
+    width: 100%; min-height: 100vh; display: flex; justify-content: center; align-items: center;
+    background-color: #0d1117; font-family: 'Inter', sans-serif; color: #fff; padding: 20px; box-sizing: border-box;
+}
+.form-wrapper { width: 100%; max-width: 900px; }
+.content-row { display: flex; justify-content: center; align-items: center; gap: 60px; flex-wrap: wrap; }
+
+/* --- SCENE & SIZES --- */
+.card-scene {
+    perspective: 1000px; transition: all 0.5s ease; position: relative; cursor: pointer; margin: 0 auto;
+}
+
+/* Landscape (Standart) */
+.card-scene.landscape-mode { width: 380px; height: 240px; }
+
+/* Portrait (Kapital Bank Input üçün) */
+.card-scene.portrait-mode { width: 240px; height: 380px; }
+
+/* --- Ümumi Form Stilləri --- */
+.input-form { background: #161b22; padding: 30px; border-radius: 16px; width: 100%; max-width: 400px; border: 1px solid #30363d; }
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; font-size: 12px; color: #8b949e; margin-bottom: 6px; }
+.form-group input { width: 100%; background: #0d1117; border: 1px solid #30363d; padding: 12px; border-radius: 8px; color: white; box-sizing: border-box; font-size: 16px; }
+.form-row { display: flex; gap: 15px; }
+.add-btn { width: 100%; padding: 14px; background: #2dd4bf; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 16px; }
+.add-btn:hover { background: #14b8a6; }
+
+.kapital-style {
+    box-shadow: 0 20px 40px rgba(220, 20, 60, 0.3);
+}
+
+.kapital-front-design-red-new {
+    background: #E60028; /* Birbank Qırmızısı */
+    height: 100%;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    color: white;
+    position: relative;
+}
+
+.kb-header-new {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 30px;
+}
+
+.birbank-text {
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.visa-text {
+    font-size: 26px;
+    font-weight: bold;
+    font-style: italic;
+}
+
+.chip-silver-new {
+    width: 45px;
+    height: 35px;
+    background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
+    border-radius: 6px;
+    margin-bottom: auto; /* Aşağıdakı məlumatları ən altda saxlamaq üçün */
+}
+
+.kb-footer-new {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.kb-number-large {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 22px;
+    letter-spacing: 3px;
+    font-weight: 500;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.kb-sub-info {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 500;
+    opacity: 0.9;
+}
+.kb-holder { text-transform: uppercase; }
+
+/* Kapital Arxa tərəf */
+.kapital-back-design-red-new {
+    background: #B3001F; /* Bir az tünd qırmızı */
+    height: 100%;
+    display: flex; flex-direction: column;
+}
+.kb-back-content-new {
+    padding: 20px;
+    display: flex; justify-content: flex-end; align-items: center;
+    height: 100%;
+}
+.kb-cvv-box-new {
+    background: white;
+    color: #E60028;
+    padding: 10px 15px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-family: monospace;
+    font-size: 16px;
+    display: flex; align-items: center; gap: 10px;
+    cursor: pointer;
+}
+.kb-cvv-label { font-size: 10px; color: #666; }
+
+
+

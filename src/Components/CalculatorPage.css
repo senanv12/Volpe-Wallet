@@ -1,0 +1,258 @@
+.calc-container {
+    display: flex;
+    justify-content: center;
+    padding: 50px 20px;
+    min-height: 80vh;
+}
+
+.calc-card {
+    background: #161b22;
+    padding: 40px;
+    border-radius: 24px;
+    border: 1px solid #30363d;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+.calc-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #30363d;
+    padding-bottom: 20px;
+}
+
+.calc-header h2 {
+    color: #fff;
+    margin: 0;
+    font-size: 24px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    color: #94a3b8;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.form-group input {
+    width: 100%;
+    background: #0d1117;
+    border: 1px solid #30363d;
+    padding: 14px;
+    border-radius: 12px;
+    color: #fff;
+    font-size: 16px;
+    outline: none;
+    transition: 0.3s;
+}
+
+.form-group input:focus {
+    border-color: #2dd4bf;
+    box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.1);
+}
+
+.calc-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.calc-btn {
+    flex: 1;
+    padding: 14px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 16px;
+    border: none;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.calc-btn.primary {
+    background: #2dd4bf;
+    color: #0d1117;
+}
+.calc-btn.primary:hover {
+    background: #14b8a6;
+    transform: translateY(-2px);
+}
+
+.calc-btn.secondary {
+    background: transparent;
+    border: 1px solid #30363d;
+    color: #fff;
+}
+.calc-btn.secondary:hover {
+    border-color: #ef4444;
+    color: #ef4444;
+}
+
+/* Nəticə Stili */
+.calc-result {
+    background: rgba(45, 212, 191, 0.1);
+    border: 1px solid rgba(45, 212, 191, 0.2);
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    margin-top: 30px;
+}
+
+.calc-result p {
+    color: #2dd4bf;
+    margin: 0 0 5px 0;
+    font-size: 14px;
+    text-transform: uppercase;
+}
+
+.calc-result h1 {
+    color: #fff;
+    margin: 0;
+    font-size: 36px;
+}
+
+/* --- BANK DÜYMƏLƏRİ (YENİ) --- */
+.banks-section {
+    margin-top: 30px;
+    border-top: 1px solid #30363d;
+    padding-top: 20px;
+}
+
+.banks-title {
+    color: #94a3b8;
+    font-size: 14px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.banks-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.bank-btn {
+    background: #0d1117;
+    border: 1px solid #30363d;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: 0.2s;
+}
+
+.bank-btn:hover {
+    background: rgb(162, 201, 196);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.bank-name {
+    color: #fff;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+/* Animasiyalar */
+.animate-pop { animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.animate-fade { animation: fadeIn 0.5s ease; }
+
+@keyframes popIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 500px) {
+    .banks-grid {
+        grid-template-columns: 1fr; /* Mobildə tək sütun */
+    }
+}
+
+/* --- CalculatorPage.css --- */
+
+/* ... (Köhnə stylar qalır: calc-container, calc-card və s.) ... */
+
+/* --- BANK DÜYMƏLƏRİ (LOGOLAR ÜÇÜN YENİLƏNDİ) --- */
+.banks-section {
+    margin-top: 30px;
+    border-top: 1px solid #30363d;
+    padding-top: 20px;
+}
+
+.banks-title {
+    color: #94a3b8;
+    font-size: 14px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.banks-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Yan-yana 2 dənə */
+    gap: 15px;
+}
+
+.bank-btn {
+    background: rgb(255, 255, 255); /* Logoların görünməsi üçün ağ fon */
+    border: none; /* Borderi yığışdırdıq (yalnız border-left qalır JS-də) */
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between; /* Logo solda, ikon sağda */
+    align-items: center;
+    transition: all 0.2s ease;
+    height: 60px; /* Sabit hündürlük */
+    position: relative;
+    overflow: hidden;
+}
+
+.bank-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
+    filter: brightness(0.95); /* Hoverdə yüngül tündləşmə */
+}
+
+/* Logo Şəkli */
+.bank-logo-img {
+    height: 35px; /* Logonun hündürlüyü */
+    width: auto;
+    max-width: 120px; /* Çox genəlməsin */
+    object-fit: contain; /* Şəkil əzilməsin */
+    display: block;
+}
+
+/* Kiçik ox işarəsi */
+.redirect-icon {
+    opacity: 0.5;
+    transition: 0.2s;
+}
+
+.bank-btn:hover .redirect-icon {
+    opacity: 1;
+    color: #000;
+}
+
+/* Mobil üçün */
+@media (max-width: 500px) {
+    .banks-grid {
+        grid-template-columns: 1fr; /* Mobildə alt-alta */
+    }
+}
