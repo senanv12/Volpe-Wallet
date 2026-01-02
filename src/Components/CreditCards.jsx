@@ -1,5 +1,5 @@
 import React from 'react';
-import './InputCard.css';
+import './css/InputCard.css';
 
 const formatCardNumber = (cardNumber) => {
     if (!cardNumber) return '#### #### #### ####';

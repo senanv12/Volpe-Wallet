@@ -1,0 +1,71 @@
+.transactions-page {
+  padding: 80px 20px;
+  background-color: transparent; 
+  position: relative;
+  z-index: 5;
+}
+
+.transactions-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.tp-header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.transactions-title {
+  color: #fff;
+  font-size: 36px;
+  font-weight: 800;
+  margin-bottom: 10px;
+  letter-spacing: -1px;
+}
+
+.transactions-subtitle {
+    color: #94a3b8;
+    font-size: 16px;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+/* --- YENİ SPLIT LAYOUT --- */
+.tp-split-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 50% - 50% bölgü */
+    gap: 40px;
+    align-items: stretch; /* Hündürlükləri bərabərləşdirir */
+}
+
+/* Sol Tərəf */
+.tp-left {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Sağ Tərəf */
+.tp-right {
+    display: flex;
+    flex-direction: column;
+}
+
+.market-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #94a3b8;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+    .tp-split-layout {
+        grid-template-columns: 1fr; /* Mobildə alt-alta */
+    }
+    
+    .magic-card {
+        min-height: auto;
+    }
+}

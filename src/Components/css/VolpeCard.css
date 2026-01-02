@@ -1,0 +1,117 @@
+.volpe-card {
+    /* Daha böyük ölçülər */
+    width: 400px;
+    height: 250px;
+    border-radius: 28px;
+    padding: 30px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    
+    /* Kölgə və Parıltı */
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.4),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.1); /* Daxili haşiyə */
+    
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    
+    /* Animasiya */
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    animation: floatCard 6s ease-in-out infinite; /* Üzən effekti */
+}
+
+/* Mouse üstünə gələndə */
+.volpe-card:hover {
+    transform: scale(1.05) translateY(-10px);
+    box-shadow: 0 30px 70px rgba(45, 212, 191, 0.3); /* Parlaq kölgə */
+}
+
+/* Üzən Animasiya */
+@keyframes floatCard {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
+
+/* Parıltı Effekti (Glass Shine) */
+.volpe-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.2), 
+        transparent
+    );
+    transform: skewX(-20deg);
+    animation: shine 4s infinite;
+}
+
+@keyframes shine {
+    0% { left: -150%; }
+    20% { left: 150%; } /* Sürətli keçid */
+    100% { left: 150%; } /* Uzun fasilə */
+}
+
+/* Watermark */
+.volpe-watermark {
+    position: absolute;
+    right: -50px;
+    bottom: -50px;
+    opacity: 0.1;
+    transform: rotate(-15deg);
+}
+.volpe-watermark svg {
+    width: 300px;
+    height: 300px;
+}
+
+/* Typography */
+.volpe-balance .label {
+    font-size: 14px;
+    opacity: 0.9;
+    letter-spacing: 2px;
+    margin-bottom: 5px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.volpe-balance h2 {
+    font-size: 42px; /* Çox böyük balans */
+    font-weight: 800;
+    margin: 0;
+    letter-spacing: -1px;
+    text-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.volpe-holder {
+    font-size: 18px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.volpe-expiry {
+    font-family: 'Roboto Mono', monospace;
+    background: rgba(0,0,0,0.2);
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+/* --- RESPONSIVE MOBILE --- */
+@media (max-width: 768px) {
+    .volpe-card {
+        width: 100%; /* Mobildə ekranı doldurur */
+        max-width: 340px; /* Amma çox da böyümür */
+        height: 220px;
+    }
+    .volpe-balance h2 {
+        font-size: 32px;
+    }
+}

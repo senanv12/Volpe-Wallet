@@ -1,65 +1,97 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
-import { translationsData } from '../Data/translations'; // Lüğəti import edirik
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import api from '../api';
 
 const SettingsContext = createContext();
 
-export const useSettings = () => useContext(SettingsContext);
-
 export const SettingsProvider = ({ children }) => {
-  const [language, setLanguage] = useState('AZ');
-  
-  // --- VALYUTA ---
-  const [currency, setCurrency] = useState('AZN');
-  const [exchangeRates, setExchangeRates] = useState({});
-  const [loading, setLoading] = useState(true);
+  const [language, setLanguage] = useState(localStorage.getItem('appLang') || 'AZ');
+  const [translations, setTranslations] = useState({});
+  const [loadingLang, setLoadingLang] = useState(true);
+  const [currency, setCurrency] = useState(localStorage.getItem('appCurrency') || 'AZN');
+  const [rates, setRates] = useState({ AZN: 1, USD: 0.59, EUR: 0.54, TRY: 18.5, GBP: 0.46, RUB: 53.0 });
 
   const currencyOptions = [
-    { code: 'AZN', symbol: '₼', label: 'Manat' },
-    { code: 'USD', symbol: '$', label: 'Dollar' },
-    { code: 'EUR', symbol: '€', label: 'Euro' },
-    { code: 'RUB', symbol: '₽', label: 'Ruble' },
-    { code: 'TRY', symbol: '₺', label: 'Lira' },
-    { code: 'GBP', symbol: '£', label: 'Pound' },
+    { code: 'AZN', symbol: '₼' },
+    { code: 'TRY', symbol: '₺' },
+    { code: 'USD', symbol: '$' },
+    { code: 'GBP', symbol: '£' },
+    { code: 'EUR', symbol: '€' },
+    { code: 'RUB', symbol: '₽' }
   ];
 
+  // 1. Tərcümələri yüklə
   useEffect(() => {
-    fetch('https://open.er-api.com/v6/latest/USD')
-      .then(res => res.json())
-      .then(data => {
-        setExchangeRates(data.rates);
-        setLoading(false);
-      })
-      .catch(err => console.error("Valyuta xətası:", err));
+    const fetchTranslations = async () => {
+      setLoadingLang(true);
+      try {
+        const { data } = await api.get(`/translations?lang=${language}`);
+        setTranslations(data);
+        localStorage.setItem('appLang', language);
+      } catch (error) {
+        console.error("Dil yüklənmədi:", error);
+      } finally {
+        setLoadingLang(false);
+      }
+    };
+    fetchTranslations();
+  }, [language]);
+
+  // 2. Valyuta məzənnələrini yüklə
+  useEffect(() => {
+    const fetchRates = async () => {
+      try {
+        const { data } = await api.get('/rates');
+        setRates(data);
+      } catch (error) {
+        console.error("Məzənnələr alınmadı");
+      }
+    };
+    fetchRates();
   }, []);
 
+  useEffect(() => {
+    localStorage.setItem('appCurrency', currency);
+  }, [currency]);
+
+  // 3. Tərcümə Funksiyası (Fallback ilə)
+  const t = (key) => {
+    const fallbacks = {
+      greeting_hello: "Salam",
+      balance_increasing: "Balansın artır.",
+      current_balance: "Cari Balans",
+      welcome: "Xoş Gəldin",
+      active: "AKTİV",
+      status: "Status",
+      nav_cards: "Kartlar",
+      nav_transactions: "Bazar",
+      nav_calculator: "Kalkulyator",
+      stat_balance: "Kartların Cəmi",
+      card_expires: "BİTMƏ TARİXİ"
+    };
+
+    if (loadingLang || !translations[key]) {
+      return fallbacks[key] || key;
+    }
+    return translations[key];
+  };
+
   const convertAmount = (amountInAZN) => {
-    if (loading || !exchangeRates[currency]) return amountInAZN;
-    const aznRate = exchangeRates['AZN'];
-    const targetRate = exchangeRates[currency];
-    const amountInUSD = amountInAZN / aznRate;
-    return (amountInUSD * targetRate);
+    if (!amountInAZN) return 0;
+    const rate = rates[currency] || 1;
+    return amountInAZN * rate;
   };
 
   const currentSymbol = currencyOptions.find(c => c.code === currency)?.symbol || '';
 
-  // --- TƏRCÜMƏ FUNKSİYASI (YENİ) ---
-  const t = (key) => {
-    // Seçilmiş dildə sözü tapır, tapmasa olduğu kimi qaytarır
-    return translationsData[language][key] || key;
-  };
-
   return (
     <SettingsContext.Provider value={{ 
-      language, 
-      setLanguage, 
-      currency, 
-      setCurrency, 
-      currencyOptions,
-      convertAmount,
-      currentSymbol,
-      t // t funksiyasını ixrac edirik
+      language, setLanguage, t, loadingLang,
+      currency, setCurrency, currencyOptions, 
+      convertAmount, currentSymbol, rates 
     }}>
       {children}
     </SettingsContext.Provider>
   );
 };
+
+export const useSettings = () => useContext(SettingsContext);

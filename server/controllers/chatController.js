@@ -1,4 +1,5 @@
 const Message = require('../models/Message');
+const User = require('../models/User');
 
 // Mesaj Göndər
 exports.sendMessage = async (req, res) => {
@@ -12,7 +13,7 @@ exports.sendMessage = async (req, res) => {
       recipient: recipientId,
       text
     });
-    // Mesajı yaradandan sonra dərhal populate edirik ki, Frontend-də "sender" null olmasın
+    // Mesajı yaradandan sonra dərhal populate edirik
     const populatedMsg = await Message.findById(msg._id).populate('sender', 'name avatar');
     
     res.status(201).json(populatedMsg);
@@ -21,7 +22,7 @@ exports.sendMessage = async (req, res) => {
   }
 };
 
-// Söhbəti Gətir (CRASH PROBLEMİ BURADA OLA BİLƏR)
+// Söhbəti Gətir (Mesajlar)
 exports.getConversation = async (req, res) => {
   const { userId } = req.params;
   try {
@@ -32,32 +33,39 @@ exports.getConversation = async (req, res) => {
       ]
     })
     .sort({ createdAt: 1 })
-    .populate('sender', 'name avatar'); // <--- BU VACİBDİR
+    .populate('sender', 'name avatar');
 
-    // Əgər mesaj yoxdursa boş array qaytar, null yox!
     res.json(messages || []); 
   } catch (error) {
     console.error(error);
-    res.json([]); // Xəta olsa belə boş array qaytar ki, ekran qaralmasın
+    res.status(500).json([]);
   }
 };
 
-// İstifadəçiləri Gətir
+// İstifadəçiləri Gətir (Siyahı üçün - ƏSAS DÜZƏLİŞ BURADADIR)
 exports.getChatUsers = async (req, res) => {
     try {
+        // Mənim iştirak etdiyim bütün mesajları tap
         const messages = await Message.find({
             $or: [{ sender: req.user.id }, { recipient: req.user.id }]
-        }).populate('sender recipient', 'name username avatar');
+        })
+        .sort({ createdAt: -1 })
+        .populate('sender', 'name username avatar')
+        .populate('recipient', 'name username avatar');
 
         const usersMap = new Map();
 
         messages.forEach(msg => {
-            // sender və ya recipient silinibse xəta verməsin
-            if(!msg.sender || !msg.recipient) return;
+            if (!msg.sender || !msg.recipient) return;
 
-            const otherUser = msg.sender._id.equals(req.user.id) ? msg.recipient : msg.sender;
-            
-            if(!usersMap.has(otherUser._id.toString())) {
+            // Məntiq: Mən senderəmsə -> Recipienti götür. Mən Recipientəmsə -> Senderi götür.
+            const isMeSender = msg.sender._id.toString() === req.user.id.toString();
+            const otherUser = isMeSender ? msg.recipient : msg.sender;
+
+            // Özümüzü siyahıya salmayaq (Ehtiyat üçün)
+            if (otherUser._id.toString() === req.user.id.toString()) return;
+
+            if (!usersMap.has(otherUser._id.toString())) {
                 usersMap.set(otherUser._id.toString(), {
                     _id: otherUser._id,
                     name: otherUser.name,
@@ -68,8 +76,10 @@ exports.getChatUsers = async (req, res) => {
             }
         });
 
-        res.json(Array.from(usersMap.values()));
+        const users = Array.from(usersMap.values());
+        res.json(users);
     } catch (error) {
-        res.json([]); // Xəta olsa boş qaytar
+        console.error("Chat Users Error:", error);
+        res.status(500).json({ message: error.message });
     }
-}
+};

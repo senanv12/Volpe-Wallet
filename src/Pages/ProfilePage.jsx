@@ -3,7 +3,7 @@ import { useData } from '../Context/DataContext';
 import Header from '../Components/Header';
 import { Camera, Edit2, Save } from 'lucide-react'; // İkonlar
 import api from '../api';
-import './ProfilePage.css';
+import './css/ProfilePage.css';
 
 const ProfilePage = () => {
   const { user, cards } = useData();

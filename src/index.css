@@ -22,3 +22,78 @@ body {
   margin: 0;
   padding: 0;
 }
+
+
+/* --- RESPONSIVE MEDIA QUERIES --- */
+
+/* =========================================
+   MOBILE (360px - 767px)
+   ========================================= */
+@media (max-width: 767px) {
+  /* Ümumi Konteynerlər */
+  .main-container {
+    flex-direction: column;
+    padding: 100px 20px 40px 20px; /* Header üçün yer */
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .main-content {
+    max-width: 100%;
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .hero-title {
+    font-size: 36px; /* Başlığı kiçilt */
+  }
+
+  /* Sağ tərəfdəki 3D kartlar mobildə çox yer tutur, onları sadələşdiririk və ya gizlədirik */
+  .cards-scroll-section {
+    display: none; /* Mobildə gizlədilir, çünki aşağıda CardsPage var */
+  }
+
+  /* Modal Pəncərələr (Transfer, Username və s.) */
+  .input-form, .modal, .auth-card {
+    width: 95% !important;
+    padding: 20px !important;
+  }
+  
+  /* Feature Section (Carousel) */
+  .carousel-track {
+    width: 100%;
+    transform: none; /* 3D effektini ləğv et */
+  }
+  .carousel-card {
+    position: relative;
+    width: 100%;
+    margin-bottom: 20px;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* =========================================
+   TABLET (768px - 1023px)
+   ========================================= */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .main-container {
+    flex-direction: column;
+    padding: 120px 40px;
+  }
+
+  .main-content {
+    max-width: 100%;
+    text-align: center;
+    margin-bottom: 50px;
+  }
+
+  .cards-scroll-section {
+    width: 100%;
+    height: 300px;
+  }
+  
+  .hero-title {
+    font-size: 48px;
+  }
+}

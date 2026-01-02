@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Mail, Lock, User, ArrowRight, ArrowLeft, X, Loader, AtSign, Check } from 'lucide-react';
 import DarkVeil from '../Components/Backgrounds/DarkVeil';
 import api from '../api';
-import './AuthPage.css';
+import './css/AuthPage.css';
 
 const AuthPage = ({ mode }) => {
   const navigate = useNavigate();

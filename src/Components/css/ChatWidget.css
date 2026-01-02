@@ -1,0 +1,208 @@
+/* --- TalkJS Style Widget --- */
+
+.talkjs-launcher {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #2dd4bf;
+  color: #0f172a;
+  border: none;
+  box-shadow: 0 5px 20px rgba(45, 212, 191, 0.4);
+  cursor: pointer;
+  z-index: 9999;
+  transition: transform 0.2s;
+  display: flex; align-items: center; justify-content: center;
+}
+.talkjs-launcher:hover { transform: scale(1.1); }
+
+/* Main Container */
+.talkjs-container {
+  position: fixed;
+  bottom: 100px;
+  right: 30px;
+  width: 360px;
+  height: 550px;
+  background: #ffffff; /* TalkJS adətən işıqlı olur, amma Dark Mode üçün dəyişə bilərik */
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  display: flex;
+  flex-direction: column;
+  z-index: 9999;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+  animation: popUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Dark Mode Adaptation */
+.talkjs-container {
+    background: #161b22;
+    border: 1px solid #30363d;
+}
+
+@keyframes popUp {
+    from { opacity: 0; transform: translateY(20px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* HEADER */
+.talkjs-header {
+    height: 64px;
+    border-bottom: 1px solid #30363d;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    background: #0d1117;
+}
+
+.talkjs-header-main {
+    width: 100%; display: flex; justify-content: space-between; align-items: center;
+}
+.talkjs-title { font-size: 18px; font-weight: 700; color: #fff; }
+.talkjs-close-btn { background: none; border: none; color: #8b949e; cursor: pointer; }
+
+/* Active Chat Header */
+.talkjs-header-content {
+    display: flex; align-items: center; gap: 12px; width: 100%;
+}
+.talkjs-back-btn { background: none; border: none; color: #fff; cursor: pointer; padding: 0; }
+.talkjs-avatar-header {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: #2dd4bf; position: relative;
+    display: flex; align-items: center; justify-content: center; overflow: hidden;
+}
+.talkjs-avatar-header img { width: 100%; height: 100%; object-fit: cover; }
+.online-dot {
+    width: 10px; height: 10px; background: #22c55e; border: 2px solid #0d1117;
+    border-radius: 50%; position: absolute; bottom: 0; right: 0;
+}
+.talkjs-user-info { flex: 1; display: flex; flex-direction: column; }
+.talkjs-username { font-weight: 600; font-size: 14px; color: #fff; }
+.talkjs-status { font-size: 11px; color: #22c55e; }
+.talkjs-options-btn { background: none; border: none; color: #8b949e; cursor: pointer; }
+
+/* BODY */
+.talkjs-body {
+    flex: 1;
+    overflow-y: auto;
+    background: #0d1117;
+}
+
+/* INBOX LIST */
+.talkjs-inbox { padding: 10px; }
+.talkjs-empty {
+    text-align: center; padding: 40px 20px; color: #6b7280;
+}
+.talkjs-conversation-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.talkjs-conversation-item:hover { background: rgba(255,255,255,0.05); }
+
+.talkjs-avatar-wrapper {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: bold; overflow: hidden;
+}
+.talkjs-avatar-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+
+.talkjs-conversation-info { flex: 1; }
+.talkjs-info-top { display: flex; justify-content: space-between; margin-bottom: 4px; }
+.talkjs-name { font-weight: 600; color: #e5e7eb; font-size: 15px; }
+.talkjs-time { font-size: 11px; color: #6b7280; }
+.talkjs-preview { color: #9ca3af; font-size: 13px; display: block; }
+
+/* CHAT FEED */
+.talkjs-feed {
+    padding: 20px 16px;
+    display: flex; flex-direction: column; gap: 16px;
+}
+.talkjs-message-row { display: flex; gap: 8px; max-width: 85%; }
+.talkjs-message-row.me { align-self: flex-end; flex-direction: row-reverse; }
+.talkjs-message-row.them { align-self: flex-start; }
+
+.talkjs-message-avatar {
+    width: 32px; height: 32px; border-radius: 50%; background: #ccc;
+    display: flex; align-items: center; justify-content: center; overflow: hidden; font-size: 12px;
+}
+.talkjs-message-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+.talkjs-bubble {
+    padding: 10px 14px;
+    border-radius: 18px;
+    position: relative;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+.talkjs-message-row.me .talkjs-bubble {
+    background: #2dd4bf;
+    color: #0f172a;
+    border-bottom-right-radius: 4px;
+}
+.talkjs-message-row.them .talkjs-bubble {
+    background: #1f2937;
+    color: #fff;
+    border: 1px solid #374151;
+    border-bottom-left-radius: 4px;
+}
+
+.talkjs-text { font-size: 14px; line-height: 1.4; }
+.talkjs-meta {
+    font-size: 10px; margin-top: 4px; text-align: right; opacity: 0.7;
+}
+
+/* FOOTER */
+.talkjs-footer {
+    padding: 12px 16px;
+    background: #161b22;
+    border-top: 1px solid #30363d;
+    display: flex; align-items: center; gap: 10px;
+}
+.talkjs-attach-btn {
+    background: none; border: none; color: #6b7280; cursor: pointer;
+}
+.talkjs-input-wrapper {
+    flex: 1;
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: 20px;
+    padding: 8px 16px;
+}
+.talkjs-input-wrapper input {
+    width: 100%; background: transparent; border: none; outline: none; color: white;
+}
+.talkjs-send-btn {
+    background: none; border: none; color: #6b7280; cursor: pointer;
+    transition: 0.2s;
+}
+.talkjs-send-btn.active { color: #2dd4bf; }
+
+/* --- CHAT MOBILE --- */
+
+@media (max-width: 767px) {
+  .talkjs-container {
+    width: 100%;
+    height: 100%; /* Tam ekran */
+    bottom: 0;
+    right: 0;
+    border-radius: 0; /* Küncləri düzəlt */
+    top: 0; /* Yuxarıdan başlasın */
+    z-index: 10000;
+  }
+
+  .talkjs-launcher {
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+  }
+  
+  .talkjs-body {
+    height: calc(100% - 130px); /* Header və Footer çıxılmaqla */
+  }
+}

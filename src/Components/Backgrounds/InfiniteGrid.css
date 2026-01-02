@@ -1,0 +1,67 @@
+/* Container - Ekranın arxasında durur */
+.infinite-grid-wrapper {
+    position: fixed; /* Absolute yox, Fixed ki, scroll edəndə qaçmasın */
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 0; /* Bütün məzmunun arxasında */
+    background-color: #050505; /* Əsas tünd fon */
+    overflow: hidden;
+    pointer-events: none; /* Klikləməyə mane olmur */
+}
+
+/* Şəbəkənin Özü */
+.infinite-grid {
+    position: absolute;
+    inset: 0;
+    width: 200%; /* Hərəkət üçün böyük ölçü */
+    height: 200%;
+    top: -50%;
+    left: -50%;
+    
+    /* Grid Xətləri */
+    background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    
+    background-size: 50px 50px; /* Kvadratların ölçüsü */
+    
+    /* Hərəkət Animasiyası */
+    transform-origin: center;
+    animation: moveGrid 20s linear infinite;
+    
+    /* 3D Dərinlik Effekti (İstəyə bağlı) */
+    /* Əgər tam düz istəyirsinizsə, aşağıdakı 'transform' sətrini silin */
+    transform: perspective(500px) rotateX(60deg);
+}
+
+/* Hərəkət Animasiyası */
+@keyframes moveGrid {
+    0% {
+        transform: perspective(500px) rotateX(60deg) translateY(0);
+    }
+    100% {
+        transform: perspective(500px) rotateX(60deg) translateY(50px);
+    }
+}
+
+/* Fade Overlay (Vignette) - Kənarları qaraltmaq üçün */
+.infinite-grid-fade {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, transparent 0%, #050505 80%);
+    z-index: 1;
+}
+
+.infinite-grid-wrapper {
+    position: fixed; /* Fixed olmalıdır! */
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    z-index: 0; /* Ən arxada */
+    background-color: #050505;
+    pointer-events: none;
+}
+/* ... qalan kodlar eynidir ... */

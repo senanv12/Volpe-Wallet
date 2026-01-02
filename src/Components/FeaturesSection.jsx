@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './FeaturesSection.css';
+import './css/FeaturesSection.css';
 
 const featuresData = [
   { id: 1, title: 'Təhlükəsizlik', desc: 'Bank səviyyəsində qoruma', icon: '🛡️', color: '#00C48C' },

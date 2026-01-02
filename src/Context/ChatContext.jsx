@@ -9,13 +9,13 @@ export const ChatProvider = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [chats, setChats] = useState([]);
   const [activeChat, setActiveChat] = useState(null);
-  const [unreadCount, setUnreadCount] = useState(0);
 
-  // Inbox yüklə
+  // İstifadəçi daxil olubsa, siyahını yüklə
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user'));
     if (user) {
        fetchChatList();
+       // Hər 5 saniyədən bir yeni mesajları yoxla
        const interval = setInterval(fetchChatList, 5000);
        return () => clearInterval(interval);
     }
@@ -24,56 +24,45 @@ export const ChatProvider = ({ children }) => {
   const fetchChatList = async () => {
     try {
         const { data } = await api.get('/chat/users');
-        // YALNIZ ARRAY QƏBUL ET
         if (Array.isArray(data)) {
             setChats(data);
         }
     } catch (e) { console.error(e); }
   };
 
+  // --- ƏSAS DÜZƏLİŞ BURADADIR ---
   const startChat = (targetUser) => {
     if (!targetUser) return;
-    setIsOpen(true);
-    const existing = chats.find(c => c._id === targetUser._id);
+    setIsOpen(true); // Çat pəncərəsini aç
     
-    if (existing) {
-        setActiveChat(existing);
+    // 1. Siyahıda bu adam varmı?
+    const existingChat = chats.find(c => c._id === targetUser._id);
+    
+    if (existingChat) {
+        // Varsa, onu aktiv et
+        setActiveChat(existingChat);
     } else {
-        setActiveChat({
+        // Yoxdursa, müvəqqəti obyekt yarat
+        const newChat = {
             _id: targetUser._id,
             name: targetUser.name,
             username: targetUser.username,
             avatar: targetUser.avatar,
-            messages: []
+            messages: [] // Boş mesaj siyahısı
+        };
+        
+        // Aktiv et
+        setActiveChat(newChat);
+        
+        // Siyahıya əlavə et (əgər artıq yoxdursa)
+        setChats(prev => {
+            if (prev.find(p => p._id === newChat._id)) return prev;
+            return [newChat, ...prev];
         });
     }
   };
 
-  // MESAJLARI YÜKLƏ (Təhlükəsiz Versiya)
-  useEffect(() => {
-      let isMounted = true;
-      if (activeChat?._id) {
-          const fetchMsgs = async () => {
-              try {
-                  const { data } = await api.get(`/chat/conversation/${activeChat._id}`);
-                  if (isMounted) {
-                      setActiveChat(prev => {
-                          if (prev && prev._id === activeChat._id) {
-                              // Gələn data Array deyilsə, boş array qoy
-                              return { ...prev, messages: Array.isArray(data) ? data : [] };
-                          }
-                          return prev;
-                      });
-                  }
-              } catch (error) { console.error(error); }
-          };
-          
-          fetchMsgs();
-          const interval = setInterval(fetchMsgs, 3000);
-          return () => { clearInterval(interval); isMounted = false; };
-      }
-  }, [activeChat?._id]);
-
+  // Mesaj göndərmək
   const sendMessage = async (text) => {
     if (!activeChat || !text.trim()) return;
     try {
@@ -81,19 +70,52 @@ export const ChatProvider = ({ children }) => {
             recipientId: activeChat._id, 
             text 
         });
+        
+        // Mesaj gedən kimi ekranda göstər
         setActiveChat(prev => ({
             ...prev,
             messages: [...(prev.messages || []), data]
         }));
+        
+        // Siyahını arxa planda yenilə
         fetchChatList();
-    } catch (e) { alert("Mesaj getmədi"); }
+    } catch (e) { 
+        alert("Mesaj göndərilə bilmədi. İnterneti yoxlayın."); 
+    }
   };
+
+  // Aktiv çatı yeniləmək (Real-vaxt mesajları görmək üçün)
+  useEffect(() => {
+      let isMounted = true;
+      if (activeChat?._id && isOpen) {
+          const fetchMsgs = async () => {
+              try {
+                  const { data } = await api.get(`/chat/conversation/${activeChat._id}`);
+                  if (isMounted) {
+                      setActiveChat(prev => {
+                          if (prev && prev._id === activeChat._id) {
+                              // Yalnız mesaj sayı dəyişibsə yenilə (performans üçün)
+                              const prevLen = prev.messages ? prev.messages.length : 0;
+                              if (Array.isArray(data) && data.length !== prevLen) {
+                                  return { ...prev, messages: data };
+                              }
+                          }
+                          return prev;
+                      });
+                  }
+              } catch (error) { console.error(error); }
+          };
+          fetchMsgs(); // İlk açılan kimi yüklə
+          const interval = setInterval(fetchMsgs, 3000); // Hər 3 saniyədən bir yoxla
+          return () => { clearInterval(interval); isMounted = false; };
+      }
+  }, [activeChat?._id, isOpen]);
 
   const toggleWidget = () => setIsOpen(!isOpen);
 
   return (
     <ChatContext.Provider value={{ 
-      isOpen, setIsOpen, toggleWidget, chats, activeChat, setActiveChat, startChat, sendMessage, unreadCount 
+      isOpen, setIsOpen, toggleWidget, chats, activeChat, setActiveChat, startChat, sendMessage 
     }}>
       {children}
     </ChatContext.Provider>

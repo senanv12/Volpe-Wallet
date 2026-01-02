@@ -1,7 +1,7 @@
 import React from 'react';
 import { useData } from '../Context/DataContext';
 import { ArrowUpRight, ArrowDownLeft } from 'lucide-react';
-import './DisplayCards.css';
+import './css/DisplayCards.css';
 
 const DisplayCards = () => {
   const { transactions, user } = useData();

@@ -1,71 +1,132 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useChat } from '../Context/ChatContext';
-import { X, Send, MessageCircle } from 'lucide-react';
-import './ChatWidget.css'; // Buna ehtiyac olacaq
+import { MessageCircle, X, Send, ArrowLeft, MoreVertical, Image as ImageIcon } from 'lucide-react';
+import './css/ChatWidget.css'; 
 
 const ChatWidget = () => {
-  const { isOpen, toggleWidget, activeChat, setActiveChat, chats, sendMessage } = useChat();
+  const { 
+    isOpen, toggleWidget, activeChat, setActiveChat, chats, sendMessage 
+  } = useChat();
+
   const [text, setText] = useState('');
   const messagesEndRef = useRef(null);
   const user = JSON.parse(localStorage.getItem('user'));
 
-  // Mesaj gələndə avtomatik aşağı sürüşdür
+  // Avtomatik aşağı sürüşdürmə
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [activeChat?.messages]);
+    if (isOpen && activeChat) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [activeChat?.messages, isOpen, activeChat]);
 
+  if (!user) return null;
+
+  // --- 1. KAPALI HAL (Launcher) ---
   if (!isOpen) return (
-    <button className="chat-launcher" onClick={toggleWidget}>
+    <button className="talkjs-launcher" onClick={toggleWidget}>
         <MessageCircle size={28} />
     </button>
   );
 
+  // --- 2. AÇIQ HAL (Main Container) ---
   return (
-    <div className="chat-widget">
-      {/* 1. HEADER */}
-      <div className="chat-header">
-        <div className="header-info">
-            {activeChat ? (
-                <>
-                    <button onClick={() => setActiveChat(null)} style={{marginRight:'10px', background:'none', border:'none', color:'white', cursor:'pointer'}}>←</button>
-                    <span>{activeChat.name}</span>
-                </>
-            ) : (
-                <span>Mesajlar</span>
-            )}
-        </div>
-        <button onClick={toggleWidget} className="close-btn"><X size={20}/></button>
-      </div>
-
-      {/* 2. BODY */}
-      <div className="chat-body">
-        {!activeChat ? (
-            // SİYAHI GÖRÜNÜŞÜ (Inbox)
-            <div className="chat-list">
-                {chats.length === 0 ? <p style={{padding:'20px', color:'#888', textAlign:'center'}}>Heç kimlə yazışmamısınız.</p> : 
-                 chats.map(chat => (
-                    <div key={chat._id} className="chat-list-item" onClick={() => setActiveChat(chat)}>
-                        <div className="chat-avatar">{chat.name.charAt(0)}</div>
-                        <div className="chat-details">
-                            <span className="chat-name">{chat.name}</span>
-                            <span className="chat-preview">{chat.lastMessage?.substring(0, 20)}...</span>
-                        </div>
-                    </div>
-                 ))
-                }
+    <div className="talkjs-container animate-pop-up">
+      
+      {/* HEADER */}
+      <div className="talkjs-header">
+        {activeChat ? (
+            <div className="talkjs-header-content">
+                <button onClick={() => setActiveChat(null)} className="talkjs-back-btn">
+                    <ArrowLeft size={20} />
+                </button>
+                <div className="talkjs-avatar-header">
+                    {activeChat.avatar ? 
+                      <img src={activeChat.avatar} alt="av" /> : 
+                      (activeChat.name?.[0] || 'U')
+                    }
+                    <div className="online-dot"></div>
+                </div>
+                <div className="talkjs-user-info">
+                    <span className="talkjs-username">{activeChat.name}</span>
+                    <span className="talkjs-status">Online</span>
+                </div>
+                <button className="talkjs-options-btn"><MoreVertical size={18} /></button>
             </div>
         ) : (
-            // MESAJLAŞMA GÖRÜNÜŞÜ
-            <div className="messages-area">
-                {/* ƏSAS DÜZƏLİŞ BURADADIR: (activeChat.messages || []) */}
+            <div className="talkjs-header-main">
+                <span className="talkjs-title">Mesajlar</span>
+                <button className="talkjs-close-btn" onClick={toggleWidget}>
+                    <X size={20} />
+                </button>
+            </div>
+        )}
+      </div>
+
+      {/* BODY */}
+      <div className="talkjs-body">
+        {!activeChat ? (
+            // --- INBOX VIEW (SİYAHI) ---
+            <div className="talkjs-inbox">
+                {chats.length === 0 ? (
+                    <div className="talkjs-empty">
+                        <div className="talkjs-empty-icon"><MessageCircle size={32}/></div>
+                        <p>Söhbət tarixçəsi boşdur.</p>
+                        <small>Axtarışdan istifadə edərək yeni dostlar tapın.</small>
+                    </div>
+                ) : (
+                    chats.map(chat => (
+                        <div key={chat._id} className="talkjs-conversation-item" onClick={() => setActiveChat(chat)}>
+                            <div className="talkjs-avatar-wrapper">
+                                {chat.avatar ? 
+                                  <img src={chat.avatar} alt="avatar" /> : 
+                                  (chat.name?.[0] || 'U')
+                                }
+                            </div>
+                            <div className="talkjs-conversation-info">
+                                <div className="talkjs-info-top">
+                                    <span className="talkjs-name">{chat.name}</span>
+                                    {/* Son mesaj vaxtı (Demo üçün statik qoyuruq, backend-dən gəlsə dəyişərsən) */}
+                                    <span className="talkjs-time">12:30</span>
+                                </div>
+                                <div className="talkjs-info-bottom">
+                                    <span className="talkjs-preview">
+                                        {chat.lastMessage 
+                                            ? (chat.lastMessage.length > 25 ? chat.lastMessage.substring(0, 25) + '...' : chat.lastMessage) 
+                                            : 'Söhbətə başla...'}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    ))
+                )}
+            </div>
+        ) : (
+            // --- CHAT VIEW (MESAJLAŞMA) ---
+            <div className="talkjs-feed">
                 {(activeChat.messages || []).map((msg, index) => {
-                    const isMe = msg.sender === user?._id || msg.sender?._id === user?._id;
+                    const senderData = msg.sender || {};
+                    const senderId = typeof senderData === 'object' ? senderData._id : senderData;
+                    const isMe = String(senderId) === String(user._id);
+                    
+                    // Qarşı tərəfin avatarını yalnız sol tərəfdə göstərmək üçün
+                    const showAvatar = !isMe;
+
                     return (
-                        <div key={index} className={`message-bubble ${isMe ? 'me' : 'them'}`}>
-                            {msg.text}
-                            <span className="msg-time">
-                                {new Date(msg.createdAt).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}
-                            </span>
+                        <div key={index} className={`talkjs-message-row ${isMe ? 'me' : 'them'}`}>
+                            {showAvatar && (
+                                <div className="talkjs-message-avatar">
+                                    {activeChat.avatar ? 
+                                      <img src={activeChat.avatar} alt="av" /> : 
+                                      (activeChat.name?.[0] || 'U')
+                                    }
+                                </div>
+                            )}
+                            <div className="talkjs-bubble">
+                                <div className="talkjs-text">{msg.text}</div>
+                                <div className="talkjs-meta">
+                                    {new Date(msg.createdAt).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}
+                                </div>
+                            </div>
                         </div>
                     );
                 })}
@@ -74,18 +135,28 @@ const ChatWidget = () => {
         )}
       </div>
 
-      {/* 3. FOOTER (Sadəcə çat açıq olanda görünür) */}
+      {/* FOOTER (INPUT) */}
       {activeChat && (
-          <div className="chat-footer">
-            <input 
-                type="text" 
-                placeholder="Mesaj yaz..." 
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && (sendMessage(text), setText(''))}
-            />
-            <button onClick={() => { sendMessage(text); setText(''); }}>
-                <Send size={18}/>
+          <div className="talkjs-footer">
+            <button className="talkjs-attach-btn">
+                <ImageIcon size={20} />
+            </button>
+            <div className="talkjs-input-wrapper">
+                <input 
+                    type="text" 
+                    placeholder="Bir mesaj yazın..." 
+                    value={text}
+                    autoFocus
+                    onChange={(e) => setText(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && (sendMessage(text), setText(''))}
+                />
+            </div>
+            <button 
+                className={`talkjs-send-btn ${text.trim() ? 'active' : ''}`}
+                onClick={() => { sendMessage(text); setText(''); }}
+                disabled={!text.trim()}
+            >
+                <Send size={18} />
             </button>
           </div>
       )}

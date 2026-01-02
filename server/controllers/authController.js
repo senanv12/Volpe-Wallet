@@ -23,15 +23,12 @@ exports.registerUser = async (req, res) => {
     const usernameExists = await User.findOne({ username: finalUsername });
     if (usernameExists) return res.status(400).json({ message: 'Bu istifadəçi adı artıq tutulub' });
 
-    // Şifrəni hash-ləyirik
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
+    // DÜZƏLİŞ: Şifrəni burada hash-ləmirik! User.js modelində pre('save') bunu edəcək.
     const user = await User.create({
       name: fullName,
       email,
       username: finalUsername,
-      password: hashedPassword,
+      password: password, // Xam şifrə göndərilir
       walletBalance: 100 // Bonus
     });
 
@@ -50,13 +47,13 @@ exports.registerUser = async (req, res) => {
   }
 };
 
-// 2. GİRİŞ
+// 2. GİRİŞ (Dəyişməz qalır, amma yuxarıdakı düzəliş sayəsində işləyəcək)
 exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email });
 
-    if (user && (await bcrypt.compare(password, user.password))) {
+    if (user && (await user.matchPassword(password))) { // Model metodundan istifadə edirik
       res.json({
         _id: user.id,
         name: user.name,
@@ -74,7 +71,7 @@ exports.loginUser = async (req, res) => {
   }
 };
 
-// 3. AXTARIŞ (Problem burda idi)
+// 3. AXTARIŞ
 exports.searchUsers = async (req, res) => {
   const keyword = req.query.query
     ? {
@@ -86,11 +83,9 @@ exports.searchUsers = async (req, res) => {
     : {};
 
   try {
-    // Özünü nəticələrdən çıxar ($ne: not equal)
     const users = await User.find(keyword)
                             .find({ _id: { $ne: req.user._id } })
-                            .select('name username avatar email _id'); // _id mütləq seçilməlidir
-
+                            .select('name username avatar email _id');
     res.json(users);
   } catch (error) {
     res.status(500).json({ message: error.message });

@@ -1,0 +1,433 @@
+/* --- Header.css --- */
+
+/* 1. Əsas Header Fonu - Blurlu və Sticky */
+.header {
+  background-color: rgba(13, 17, 23, 0.8); /* Yarımşəffaf tünd fon */
+  backdrop-filter: blur(12px); /* Buzlu şüşə effekti */
+  -webkit-backdrop-filter: blur(12px);
+  padding: 15px 0;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  
+  /* Sürüşdürərkən yuxarıda qalması üçün */
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.header-wrapper {
+  max-width: 1300px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+}
+
+/* 2. Loqo */
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.header-logo:hover {
+  transform: scale(1.02);
+}
+
+.logo-text {
+  font-size: 22px;
+  font-weight: 800;
+  background: linear-gradient(to right, #2dd4bf, #3b82f6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.5px;
+}
+
+/* 3. Axtarış Paneli (Mərkəz) */
+.header-search-container {
+  flex: 1;
+  max-width: 450px;
+  margin: 0 20px;
+  position: relative; /* Dropdown buna görə mövqe tutacaq */
+}
+
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 12px;
+  padding: 8px 16px;
+  transition: all 0.3s ease;
+}
+
+.search-input-wrapper:focus-within {
+  border-color: #2dd4bf;
+  box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.15);
+}
+
+.search-icon {
+  color: #8b949e;
+  margin-right: 10px;
+}
+
+.search-input-wrapper input {
+  background: transparent;
+  border: none;
+  color: #fff;
+  width: 100%;
+  font-size: 14px;
+  outline: none;
+}
+
+.clear-search {
+  cursor: pointer;
+  color: #8b949e;
+  transition: color 0.2s;
+}
+.clear-search:hover { color: #fff; }
+
+/* 4. Axtarış Nəticələri (Dropdown) */
+.search-results-dropdown {
+  position: absolute;
+  top: 100%; /* Inputun tam altında */
+  left: 0;
+  width: 100%;
+  margin-top: 8px;
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  z-index: 1001; /* Digər elementlərin üstündə olsun */
+  overflow: hidden;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.no-results {
+  padding: 20px;
+  text-align: center;
+  color: #8b949e;
+  font-size: 14px;
+}
+
+.search-result-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Ad solda, düymələr sağda */
+  padding: 12px 16px;
+  border-bottom: 1px solid #21262d;
+  transition: background 0.2s;
+}
+
+.search-result-item:last-child {
+  border-bottom: none;
+}
+
+.search-result-item:hover {
+  background-color: rgba(45, 212, 191, 0.05);
+}
+
+/* Sol tərəf: Avatar və Ad */
+.result-user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  flex: 1; /* Boş yeri tutsun */
+}
+
+.result-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: white;
+  overflow: hidden;
+}
+
+.result-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.result-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.result-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #e6edf3;
+}
+
+.result-username {
+  font-size: 12px;
+  color: #8b949e;
+}
+
+/* Sağ tərəf: Düymələr */
+.result-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.result-action-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #8b949e;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.result-action-btn:hover {
+  background: rgba(45, 212, 191, 0.1);
+  color: #2dd4bf;
+  border-color: #2dd4bf;
+}
+
+/* Transfer düyməsi üçün xüsusi rəng */
+.result-action-btn.transfer:hover {
+  background: rgba(245, 158, 11, 0.1); /* Sarımtıl */
+  color: #f59e0b;
+  border-color: #f59e0b;
+}
+
+/* 5. Header Actions (Sağ Tərəf) */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background 0.2s;
+  border: 1px solid transparent;
+}
+
+.user-profile:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.user-avatar-small {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #2dd4bf;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000;
+  font-weight: bold;
+  font-size: 14px;
+  overflow: hidden;
+}
+
+.user-avatar-small img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.user-name-text {
+  font-size: 14px;
+  font-weight: 500;
+  margin-right: 5px;
+}
+
+.notification-bell {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: transparent;
+  color: #8b949e;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.notification-bell:hover { background: rgba(255,255,255,0.05); color: white; }
+
+.notification-bell .dot {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 8px;
+  height: 8px;
+  background-color: #ef4444;
+  border-radius: 50%;
+  border: 2px solid #0d1117;
+}
+
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: #8b949e;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: 0.2s;
+}
+
+.icon-btn:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.login-btn {
+  background: linear-gradient(135deg, #2dd4bf, #0f766e);
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(45, 212, 191, 0.3);
+}
+
+/* YENİ: Settings Group (Dil və Valyuta) */
+.settings-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.setting-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #94a3b8;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.setting-btn:hover {
+    background: rgba(45, 212, 191, 0.1);
+    color: #2dd4bf;
+    border-color: #2dd4bf;
+}
+
+/* Divider */
+.divider-vertical {
+    width: 1px;
+    height: 24px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 0 10px;
+}
+
+/* MOBIL AXTARIŞ TRIGGER İKONU (Default olaraq gizlidir) */
+.mobile-search-trigger {
+    display: none; 
+}
+
+/* --- RESPONSIVE --- */
+/* 768px-dən aşağı olanda (Mobil və Tablet) */
+@media (max-width: 900px) { 
+    
+    /* 1. Loqo Yazısını gizlət (yer qazanmaq üçün) */
+    .logo-text {
+        display: none;
+    }
+
+    /* 2. Desktop Axtarış Barını gizlət */
+    .header-search-container {
+        display: none; /* Adi halda görünmür */
+        position: absolute;
+        top: 70px; /* Headerin altı */
+        left: 0;
+        width: 100%;
+        padding: 10px 20px;
+        background: rgba(13, 17, 23, 0.95);
+        backdrop-filter: blur(15px);
+        z-index: 999;
+        border-bottom: 1px solid #30363d;
+        animation: slideDown 0.3s ease;
+    }
+
+    /* 3. Açıq olanda görünür */
+    .header-search-container.mobile-visible {
+        display: block;
+    }
+
+    /* 4. Trigger İkonunu göstər */
+    .mobile-search-trigger {
+        display: flex;
+        color: white;
+    }
+
+    /* 5. Mobile Search içindəki Input */
+    .search-input-wrapper {
+        width: 100%;
+        height: 50px;
+    }
+    
+    .search-input-wrapper input {
+        font-size: 16px; /* Mobildə rahat yazmaq üçün */
+    }
+
+    .close-mobile-search {
+        color: #ef4444;
+        cursor: pointer;
+    }
+
+    /* 6. User Name gizlət */
+    .user-name-text {
+        display: none;
+    }
+    
+    /* 7. Settings (Dil/Valyuta) yığcamlaşdır */
+    .settings-group span {
+        display: none;
+    }
+    .setting-btn {
+        padding: 8px;
+    }
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

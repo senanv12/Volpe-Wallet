@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import api from '../api';
 import { useData } from '../Context/DataContext';
 import { LeoCard, KapitalCard, AbbCard, DefaultCard } from './CreditCards';
-import './InputCard.css';
+import './css/InputCard.css';
 
 const InputCard = () => {
   const { user, refreshData } = useData();
