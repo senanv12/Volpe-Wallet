@@ -4,7 +4,7 @@ import { resolve } from 'path'
 
 export default defineConfig({
   plugins: [react()],
-  base: process.env.VİTE_BASE_PATH || '/Volpe-Wallet',
+  base: process.env.VITE_BASE_PATH || '/Volpe-Wallet',
   build: {
     rollupOptions: {
       input: {
