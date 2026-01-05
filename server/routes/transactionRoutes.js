@@ -1,11 +1,14 @@
 const express = require('express');
-const { getTransactions, addTransaction, transferMoney } = require('../controllers/transactionController'); // DÜZƏLİŞ
-const { protect } = require('../middleware/authMiddleware'); // DÜZƏLİŞ
 const router = express.Router();
+const transactionController = require('../controllers/transactionController');
+const authMiddleware = require('../middleware/authMiddleware'); //
+const { protect } = require('../middleware/authMiddleware');
 
-router.route('/').get(protect, getTransactions).post(protect, addTransaction);
 
-// Transfer routu
-router.post('/transfer', protect, transferMoney);
+// Controller funksiyaları mövcuddurmu?
+if (!transactionController.transferMoney) console.error("XƏTA: transferMoney tapılmadı");
+
+router.post('/transfer', protect, transactionController.transferMoney);
+router.get('/', protect, transactionController.getTransactions);
 
 module.exports = router;

@@ -1,12 +1,27 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, MessageCircle, ArrowRightLeft, LogOut, X, Bell, Globe, DollarSign, Menu } from 'lucide-react';
+import { 
+  Search, 
+  MessageCircle, 
+  ArrowRightLeft, // Transfer ikonu
+  LogOut, 
+  X, 
+  Bell, 
+  Globe, 
+  DollarSign, 
+  Menu 
+} from 'lucide-react';
+
+// Context və API importları
 import { useChat } from '../Context/ChatContext'; 
 import { useData } from '../Context/DataContext'; 
 import { useSettings } from '../Context/SettingsContext'; 
 import api from '../api';
+
+// Modal
 import TransferModal from './TransferModal'; 
 
+// Assets & CSS
 import mainLogo from '../Assets/mainLogo.svg';
 import './css/Header.css';
 
@@ -14,68 +29,71 @@ function Header() {
   const navigate = useNavigate();
   const { startChat } = useChat(); 
   const { user } = useData();
-  const { language, setLanguage, currency, setCurrency, currencyOptions } = useSettings();
+  const { language, setLanguage, currency, setCurrency } = useSettings();
 
   // --- STATE-LƏR ---
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [showResults, setShowResults] = useState(false);
-  const [isTransferOpen, setIsTransferOpen] = useState(false);
-  const [transferTarget, setTransferTarget] = useState(null);
   
-  // MOBİL AXTARIŞ STATE-İ
-  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
+  // Transfer Modalı üçün State-lər
+  const [isTransferOpen, setIsTransferOpen] = useState(false);
+  const [transferTarget, setTransferTarget] = useState(null); // Seçilmiş istifadəçi
+
+  // Mobil Menyu State-i
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const searchRef = useRef(null);
 
-  // Dil Dəyişmək
-  const toggleLanguage = () => {
-    const langs = ['AZ', 'EN', 'RU'];
-    const nextIndex = (langs.indexOf(language) + 1) % langs.length;
-    setLanguage(langs[nextIndex]);
-  };
-
-  // Valyuta Dəyişmək
-  const toggleCurrency = () => {
-    const currCodes = currencyOptions.map(c => c.code);
-    const nextIndex = (currCodes.indexOf(currency) + 1) % currCodes.length;
-    setCurrency(currCodes[nextIndex]);
-  };
-
-  // Axtarış Funksiyası
+  // --- AXTARIŞ MƏNTİQİ (Debounce ilə) ---
   useEffect(() => {
-    const delayDebounce = setTimeout(async () => {
+    const delayDebounceFn = setTimeout(async () => {
       if (searchQuery.length > 1) {
         try {
+          // Backend-dən istifadəçi axtarışı
           const { data } = await api.get(`/users/search?query=${searchQuery}`);
           setSearchResults(data);
           setShowResults(true);
-        } catch (error) { console.error("Axtarış xətası:", error); }
+        } catch (error) {
+          console.error("Axtarış xətası:", error);
+        }
       } else {
-        setSearchResults([]); setShowResults(false);
+        setSearchResults([]);
+        setShowResults(false);
       }
-    }, 300);
-    return () => clearTimeout(delayDebounce);
+    }, 500); // 0.5 saniyə gözləyir
+
+    return () => clearTimeout(delayDebounceFn);
   }, [searchQuery]);
 
+  // Kənara klikləyəndə axtarışı bağla
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setShowResults(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // --- ACTIONS ---
+  
   const handleLogout = () => {
     localStorage.removeItem('user');
     window.location.href = '/login';
   };
 
-  const handleMessageClick = (targetUser) => {
-    startChat(targetUser);
-    setShowResults(false);
-    setSearchQuery('');
-    setIsMobileSearchOpen(false);
+  const toggleLanguage = () => {
+    const langs = ['AZ', 'EN', 'RU'];
+    const next = langs[(langs.indexOf(language) + 1) % langs.length];
+    setLanguage(next);
   };
 
-  const openTransferModal = (targetUser) => {
-      setTransferTarget(targetUser);
-      setIsTransferOpen(true);
-      setShowResults(false);
-      setSearchQuery('');
-      setIsMobileSearchOpen(false);
+  const toggleCurrency = () => {
+    const currs = ['AZN', 'USD', 'EUR', 'TRY'];
+    const next = currs[(currs.indexOf(currency) + 1) % currs.length];
+    setCurrency(next);
   };
 
   return (
@@ -85,12 +103,12 @@ function Header() {
           
           {/* 1. LOGO */}
           <div className="header-logo" onClick={() => navigate('/')}>
-            <img src={mainLogo} alt="Volpe" width={40} />
+            <img src={mainLogo} alt="Volpe Logo" width="40" />
             <span className="logo-text">Volpe</span>
           </div>
 
-          {/* 2. AXTARIŞ (DESKTOP & TABLET > 768px) */}
-          <div className={`header-search-container ${isMobileSearchOpen ? 'mobile-visible' : ''}`} ref={searchRef}>
+          {/* 2. AXTARIŞ PANELİ */}
+          <div className="header-search-container" ref={searchRef}>
             <div className="search-input-wrapper">
               <Search className="search-icon" size={20} />
               <input 
@@ -100,88 +118,109 @@ function Header() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => searchQuery.length > 1 && setShowResults(true)}
               />
-              {/* Mobil üçün bağlama düyməsi */}
-              {isMobileSearchOpen && (
-                 <X size={20} className="close-mobile-search" onClick={() => setIsMobileSearchOpen(false)} />
-              )}
-              {/* Desktop üçün təmizləmə düyməsi */}
-              {!isMobileSearchOpen && searchQuery && (
-                 <X size={16} className="clear-search" onClick={() => { setSearchQuery(''); setShowResults(false); }} />
+              {searchQuery && (
+                <X 
+                  className="clear-icon" 
+                  size={16} 
+                  onClick={() => { setSearchQuery(''); setSearchResults([]); }} 
+                />
               )}
             </div>
 
-            {showResults && (
-              <div className="search-results-dropdown">
-                {searchResults.length === 0 ? (
-                  <div className="no-results">Nəticə tapılmadı</div>
-                ) : (
-                  searchResults.map(u => (
-                    <div key={u._id} className="search-result-item">
-                      <div className="result-user-info">
-                        <div className="result-avatar">
-                          {u.avatar ? <img src={u.avatar} alt="av" /> : (u.name?.[0] || 'U')}
+            {/* AXTARIŞ NƏTİCƏLƏRİ (Dropdown) */}
+            {showResults && searchResults.length > 0 && (
+              <div className="search-dropdown">
+                {searchResults.map(resUser => (
+                  <div key={resUser._id} className="search-result-item">
+                    
+                    {/* Sol tərəf: Profil və Chat üçün kliklənə bilər */}
+                    <div className="s-user-info" onClick={() => {
+                        startChat(resUser);
+                        setShowResults(false);
+                    }}>
+                        <div className="s-avatar">
+                          {resUser.avatar ? <img src={resUser.avatar} alt="avatar" /> : resUser.name[0]}
                         </div>
-                        <div className="result-details">
-                          <span className="result-name">{u.name}</span>
-                          <span className="result-username">@{u.username}</span>
+                        <div className="s-details">
+                          <span className="s-name">{resUser.name}</span>
+                          <span className="s-username">@{resUser.username}</span>
                         </div>
-                      </div>
-                      <div className="result-actions">
-                          <button className="result-action-btn" onClick={() => handleMessageClick(u)}>
-                              <MessageCircle size={18} />
-                          </button>
-                          <button className="result-action-btn transfer" onClick={() => openTransferModal(u)}>
-                              <ArrowRightLeft size={18} />
-                          </button>
-                      </div>
                     </div>
-                  ))
-                )}
+
+                    {/* Sağ tərəf: TRANSFER DÜYMƏSİ */}
+                    {/* Bu düyməyə basanda Modalı açırıq və useri ötürürük */}
+                    <button 
+                        className="action-icon-btn transfer-btn"
+                        title="Pul köçür"
+                        onClick={(e) => {
+                            e.stopPropagation(); // Chat açılmasın
+                            setTransferTarget(resUser); // <--- Useri seçirik
+                            setIsTransferOpen(true);    // <--- Modalı açırıq
+                            setShowResults(false);      // <--- Axtarışı bağlayırıq
+                        }}
+                    >
+                        <ArrowRightLeft size={16} />
+                    </button>
+
+                  </div>
+                ))}
               </div>
+            )}
+            
+            {showResults && searchResults.length === 0 && searchQuery.length > 1 && (
+                 <div className="search-dropdown empty">
+                    İstifadəçi tapılmadı
+                 </div>
             )}
           </div>
 
-          {/* 3. SAĞ TƏRƏF */}
+          {/* 3. SAĞ MENYU (Düymələr) */}
           <div className="header-actions">
-              {/* MOBİL AXTARIŞ İKONU (Yalnız < 769px görünür) */}
-              <button className="icon-btn mobile-search-trigger" onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}>
-                <Search size={22} />
-              </button>
-
-              <div className="settings-group">
+             {/* Dil və Valyuta */}
+             <div className="settings-group desktop-only">
                 <button className="setting-btn" onClick={toggleLanguage}>
-                    <Globe size={20} />
+                    <Globe size={18} />
                     <span>{language}</span>
                 </button>
                 <button className="setting-btn" onClick={toggleCurrency}>
-                    <DollarSign size={20} />
+                    <DollarSign size={18} />
                     <span>{currency}</span>
                 </button>
              </div>
 
-             <div className="divider-vertical"></div>
+             <div className="divider-vertical desktop-only"></div>
 
              {user ? (
                <>
+                 {/* Profil */}
                  <div className="user-profile" onClick={() => navigate('/profile')}>
                     <div className="user-avatar-small">
                       {user.avatar ? <img src={user.avatar} alt="me" /> : user.name?.[0]}
                     </div>
-                    {/* Mobildə adı gizlədirik */}
-                    <span className="user-name-text">{user.name.split(' ')[0]}</span>
+                    <span className="user-name-text desktop-only">
+                        {user.name.split(' ')[0]}
+                    </span>
                  </div>
                  
+                 {/* Çıxış */}
                  <button className="icon-btn logout-btn" onClick={handleLogout} title="Çıxış">
-                    <LogOut size={22} />
+                    <LogOut size={20} />
                  </button>
                </>
              ) : (
                <button className="login-btn" onClick={() => navigate('/login')}>Daxil Ol</button>
              )}
+
+             {/* Mobil Menyu İkonu */}
+             <button className="icon-btn mobile-menu-btn" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+                <Menu size={24} />
+             </button>
           </div>
         </div>
       </header>
 
+      {/* --- TRANSFER MODALI --- */}
+      {/* Burada recipient prop-una seçilmiş useri göndəririk */}
       <TransferModal 
         isOpen={isTransferOpen} 
         onClose={() => setIsTransferOpen(false)} 

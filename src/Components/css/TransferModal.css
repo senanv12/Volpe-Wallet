@@ -1,0 +1,68 @@
+/* Modal Ümumi */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px);
+    display: flex; justify-content: center; align-items: center; z-index: 2000;
+}
+.modal-content.glass-effect {
+    background: #161b22; width: 90%; max-width: 420px;
+    padding: 25px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1);
+    color: white; animation: slideUp 0.3s ease;
+}
+.modal-header { display: flex; justify-content: space-between; margin-bottom: 20px; }
+.close-btn { background: none; border: none; color: #94a3b8; cursor: pointer; }
+
+/* Inputlar */
+.input-group { margin-bottom: 15px; }
+.input-group label { font-size: 13px; color: #94a3b8; display: block; margin-bottom: 5px; }
+.input-wrapper {
+    display: flex; align-items: center; background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 0 12px;
+}
+.input-wrapper input {
+    background: transparent; border: none; color: white; width: 100%; padding: 12px; outline: none;
+}
+.input-icon, .currency-icon { color: #64748b; margin-right: 8px; }
+
+/* KART SEÇİMİ */
+.cards-selection-area { margin-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; }
+.selection-title { font-size: 13px; color: #94a3b8; margin-bottom: 10px; }
+
+.cards-scroll-list {
+    max-height: 180px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;
+}
+.card-select-row {
+    display: flex; align-items: center; padding: 10px; border-radius: 8px;
+    background: rgba(255,255,255,0.03); border: 1px solid transparent; cursor: pointer; transition: 0.2s;
+}
+.card-select-row:hover { background: rgba(255,255,255,0.08); }
+.card-select-row.active { border-color: #2dd4bf; background: rgba(45, 212, 191, 0.1); }
+
+.card-row-left { display: flex; align-items: center; gap: 10px; }
+.card-name { font-size: 13px; font-weight: 600; }
+.card-bal { font-size: 11px; color: #94a3b8; }
+
+.deduct-badge {
+    background: rgba(239, 68, 68, 0.2); color: #ef4444; font-size: 11px;
+    padding: 2px 6px; border-radius: 4px; margin-left: auto; margin-right: 5px;
+}
+
+/* Status */
+.status-indicator {
+    margin-top: 15px; padding: 10px; border-radius: 8px; font-size: 13px; text-align: center;
+}
+.status-indicator.success { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+.status-indicator.warning { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+
+/* Button */
+.submit-btn {
+    width: 100%; margin-top: 20px; padding: 14px; border-radius: 12px; border: none;
+    background: #2dd4bf; color: #000; font-weight: bold; cursor: pointer;
+    display: flex; justify-content: center; items-align: center; gap: 8px;
+}
+.submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.message-box { margin-top: 10px; padding: 10px; border-radius: 8px; font-size: 12px; text-align: center; }
+.message-box.error { background: rgba(255,0,0,0.1); color: red; }
+.message-box.success { background: rgba(0,255,0,0.1); color: green; }
+
+@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }

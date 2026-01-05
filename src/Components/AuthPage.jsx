@@ -80,7 +80,7 @@ const AuthPage = ({ mode }) => {
       const response = await api.post(endpoint, payload);
       if (response.data) {
         localStorage.setItem('user', JSON.stringify(response.data));
-        navigate('/');
+        navigate('/dashboard');
         window.location.reload();
       }
     } catch (err) {
@@ -104,7 +104,7 @@ const AuthPage = ({ mode }) => {
         />
       </div>
 
-      <button className="close-auth" onClick={() => navigate('/')}>
+      <button className="close-auth" onClick={() => window.location.href = '/'}>
         <X size={24} />
       </button>
 

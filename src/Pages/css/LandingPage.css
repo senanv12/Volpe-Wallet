@@ -1,0 +1,208 @@
+/* src/Pages/css/LandingPage.css */
+
+:root {
+    --bg-color: #0D1117; 
+    --accent-orange: #ff9f1c; 
+    --accent-green-btn: #a3e635;
+    --text-light: #e6edf3;
+    --text-muted: #8b949e;
+    --footer-bg: #0D1117; 
+}
+
+.landing-body {
+    background-color: var(--bg-color);
+    color: var(--text-light);
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+/* Naviqasiya */
+.landing-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    background: rgba(13, 17, 23, 0.8);
+    backdrop-filter: blur(10px);
+    box-sizing: border-box;
+}
+
+.landing-logo {
+    font-size: 24px;
+    font-weight: 800;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.landing-logo i { color: var(--accent-orange); }
+
+.landing-btn-login {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: white;
+    padding: 10px 24px;
+    border-radius: 30px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.landing-btn-login:hover {
+    background: white;
+    color: black;
+}
+
+/* Hero Section */
+.landing-hero {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-text-content {
+    text-align: center;
+    z-index: 10;
+    position: relative;
+    margin-top: -50px; 
+}
+
+.landing-badge {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    color: var(--accent-orange);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: inline-block;
+    margin-bottom: 20px;
+}
+
+.landing-h1 {
+    font-size: 80px;
+    line-height: 1;
+    font-weight: 900;
+    margin-bottom: 20px;
+    background: linear-gradient(to right, #fff, #94a3b8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.landing-p {
+    color: var(--text-muted);
+    font-size: 20px;
+    max-width: 600px;
+    margin: 0 auto 40px auto;
+}
+
+/* Kart Wrapper (Ortada fırlanan) */
+.hero-card-wrapper {
+    position: absolute;
+    width: 320px;
+    height: 200px;
+    top: 130%; /* Başlanğıcda aşağıda */
+    left: 50%;
+    transform: translate(-50%, -50%) perspective(1000px) rotateX(40deg);
+    z-index: 5;
+    background: linear-gradient(135deg, #ff9f1c, #ff5e62);
+    border-radius: 20px;
+    box-shadow: 0 0 50px rgba(255, 159, 28, 0.4);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 25px;
+    box-sizing: border-box;
+}
+
+/* Dekorativ Lentlər */
+.hero-ribbon {
+    position: absolute;
+    width: 100%;
+    height: 200px;
+    filter: blur(80px);
+    opacity: 0.4;
+    z-index: 1;
+}
+.ribbon-left { background: #7c3aed; top: 20%; left: -20%; }
+.ribbon-right { background: #2dd4bf; bottom: 10%; right: -20%; }
+
+/* Volpe Feature Section */
+.volpe-section {
+    min-height: 100vh;
+    background: #0D1117;
+    position: relative;
+    padding: 100px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+.section-title {
+    font-size: 48px;
+    font-weight: 800;
+    margin-bottom: 60px;
+    text-align: center;
+}
+
+.feature-cards-container {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 1200px;
+    width: 100%;
+}
+
+.feature-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 24px;
+    padding: 40px;
+    width: 350px;
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.3s;
+}
+.feature-card:hover { background: rgba(255,255,255,0.05); }
+
+.fc-icon {
+    width: 60px; height: 60px;
+    background: #1f2937;
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; color: var(--accent-green-btn);
+    margin-bottom: 20px;
+}
+
+.fc-title { font-size: 24px; font-weight: 700; margin-bottom: 10px; }
+.fc-desc { color: var(--text-muted); line-height: 1.6; font-size: 16px; }
+
+.fc-visual {
+    height: 120px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 16px;
+    margin-top: 30px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Footer */
+.landing-footer {
+    padding: 60px 40px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 14px;
+}
