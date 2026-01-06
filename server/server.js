@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-<<<<<<< HEAD
+// <<<<<<< HEAD
 const User = require('./models/User'); // Model yolunu yoxlayın
 
 const app = express();
@@ -66,7 +66,7 @@ app.post('/api/users/login', async (req, res) => {
 });
 
 const PORT = 5000;
-=======
+// =======
 const connectDB = require('./config/db');
 // const locales = require('./data/locales'); // Buna ehtiyac qalmadı, settingsRoutes edir
 const settingsRoutes = require('./settingsRoutes'); 
@@ -98,5 +98,5 @@ app.use('/api/notifications', require('./routes/notificationRoutes'));
 app.use('/api', settingsRoutes); 
 
 const PORT = process.env.PORT || 5000;
->>>>>>> 80e1b45fd6db1969ff1b584867a6418e3e8ce138
+// >>>>>>> 80e1b45fd6db1969ff1b584867a6418e3e8ce138
 app.listen(PORT, () => console.log(`Server ${PORT} portunda işləyir...`));
