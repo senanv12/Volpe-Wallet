@@ -1,51 +1,37 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import api from '../api';
 
 const DataContext = createContext();
 
-export const useData = () => useContext(DataContext);
-
 export const DataProvider = ({ children }) => {
-  const [cards, setCards] = useState([]);
-  const [transactions, setTransactions] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
+  const [cards, setCards] = useState([]); // Başlanğıc boş array
 
-  // İstifadəçini localstorage-dən oxu
-  useEffect(() => {
-    const loggedInUser = JSON.parse(localStorage.getItem('user'));
-    setUser(loggedInUser);
-    if (loggedInUser) {
-      refreshData();
+  // Məlumatları gətirən funksiyanı useCallback ilə yaradaq
+  const fetchInitialData = useCallback(async () => {
+    try {
+      const storedUser = JSON.parse(localStorage.getItem('user'));
+      if (storedUser) {
+        // Kartları serverdən çəkirik
+        const { data } = await api.get('/cards');
+        setCards(data);
+        setUser(storedUser);
+        return data; // Məlumatları qaytarırıq ki, await edə bilək
+      }
+    } catch (error) {
+      console.error("Məlumat yüklənmə xətası:", error);
     }
   }, []);
 
-  // Məlumatları Backend-dən gətirən funksiya
-  const refreshData = async () => {
-    setLoading(true);
-    try {
-      const [cardsRes, transRes] = await Promise.all([
-        api.get('/cards'),
-        api.get('/transactions')
-      ]);
-      setCards(cardsRes.data);
-      setTransactions(transRes.data);
-    } catch (error) {
-      console.error("Data gətirilə bilmədi:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  useEffect(() => {
+    fetchInitialData();
+  }, [fetchInitialData]);
 
   return (
-    <DataContext.Provider value={{ 
-      cards, 
-      transactions, 
-      loading, 
-      refreshData, // Bu funksiyanı çağıranda hər yer yenilənəcək
-      user 
-    }}>
+    <DataContext.Provider value={{ user, setUser, cards, setCards, fetchInitialData }}>
       {children}
     </DataContext.Provider>
   );
 };
+
+export const useData = () => useContext(DataContext);

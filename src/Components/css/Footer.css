@@ -1,0 +1,96 @@
+/* --- Footer.css --- */
+
+.simple-footer {
+    background-color: #050505; /* Şəkildəki tünd fon */
+    color: #ffffff;
+    padding: 80px 20px 40px; /* Yuxarıdan geniş boşluq */
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    position: relative;
+    z-index: 10;
+    margin-top: auto;
+}
+
+.footer-content {
+    max-width: 600px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+}
+
+/* Başlıq: VOLPE ↗ */
+.footer-header {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    text-transform: uppercase;
+}
+
+.arrow-icon {
+    stroke-width: 3px;
+    width: 18px;
+    height: 18px;
+}
+
+/* Açıqlama mətni */
+.footer-subtext {
+    color: #94a3b8; /* Boz rəng */
+    font-size: 15px;
+    line-height: 1.6;
+    max-width: 400px; /* Mətn çox yayılmasın */
+    margin: 0 auto;
+}
+
+/* Sosial Düymələr */
+.footer-social-icons {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.social-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.08); /* Şəffaf fon */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #e2e8f0;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    text-decoration: none;
+}
+
+.social-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-3px);
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Behance üçün xüsusi stil (Bē yazısı) */
+.behance-btn {
+    font-weight: 900;
+    font-size: 16px;
+    letter-spacing: -0.5px;
+}
+
+/* Copyright (Ən aşağı hissə) */
+.footer-copyright {
+    margin-top: 40px;
+    font-size: 13px;
+    color: #64748b; /* Daha tünd boz */
+    border-top: 1px solid rgba(255, 255, 255, 0.05); /* Ayırıcı xətt */
+    width: 100%;
+    padding-top: 20px;
+}

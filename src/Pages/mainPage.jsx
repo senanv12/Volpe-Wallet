@@ -13,6 +13,7 @@ import TransactionsPage from '../Components/TransactionsPage';
 import CalculatorPage from '../Components/CalculatorPage';
 import VolpeCard from '../Components/VolpeCard';
 import InputCard from '../Components/InputCard';
+import Footer from '../Components/Footer';
 const MainPage = () => {
   const { t, convertAmount, currentSymbol } = useSettings();
   const { user, cards } = useData();
@@ -118,6 +119,7 @@ const MainPage = () => {
             <TransactionsPage />
             <CalculatorPage />
             <InputCard />
+            <Footer />
             
         </div>
       )}

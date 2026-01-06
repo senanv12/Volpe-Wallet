@@ -1,207 +1,291 @@
-.profile-container {
+/* --- ProfilePage.css --- */
+
+/* Səhifənin Əsas Konteyneri */
+.profile-page-wrapper {
     min-height: 100vh;
-    background-color: #0f1115;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 100px 20px;
+    padding: 120px 20px 40px; /* Header üçün yuxarıdan boşluq */
+    background-color: #0d1117;
+    font-family: 'Inter', sans-serif;
+    color: #fff;
     position: relative;
     overflow: hidden;
 }
 
-/* Dekorativ Arxa Fon */
-.blob {
-    position: absolute; width: 400px; height: 400px; filter: blur(80px); opacity: 0.4; z-index: 0;
+/* Arxa Fon Ləkələri (Sabit və daha zərif) */
+.profile-glow {
+    position: fixed;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(45, 212, 191, 0.15) 0%, transparent 70%);
+    top: -100px;
+    left: -100px;
+    z-index: 0;
+    pointer-events: none;
 }
-.blob-1 { top: -100px; left: -100px; background: #2dd4bf; }
-.blob-2 { bottom: -100px; right: -100px; background: #7c3aed; }
-
-.profile-dashboard {
-    display: flex; gap: 30px; width: 100%; max-width: 1000px; z-index: 1; flex-wrap: wrap;
+.profile-glow-2 {
+    position: fixed;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(124, 58, 237, 0.15) 0%, transparent 70%);
+    bottom: -100px;
+    right: -100px;
+    z-index: 0;
+    pointer-events: none;
 }
 
-/* Glassmorphism Panellər */
-.glass-panel {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 24px;
+/* Əsas Məzmun (Grid Layout) */
+.profile-content {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 320px 1fr; /* Sol: 320px, Sağ: Qalan yer */
+    gap: 30px;
+    position: relative;
+    z-index: 1;
+}
+
+/* --- SOL TƏRƏF: KART (Avatar) --- */
+.profile-card {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 20px;
     padding: 30px;
+    text-align: center;
+    height: fit-content;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
 }
 
-/* Sidebar */
-.profile-sidebar {
-    flex: 1; min-width: 280px; text-align: center; display: flex; flex-direction: column; align-items: center;
+.avatar-wrapper {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 20px;
 }
-.avatar-ring {
-    width: 110px; height: 110px; border-radius: 50%; padding: 5px;
-    background: linear-gradient(135deg, #2dd4bf, #7c3aed);
-    margin-bottom: 15px;
+
+.avatar-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #1f2937;
+    box-shadow: 0 0 20px rgba(45, 212, 191, 0.2);
 }
-.profile-avatar {
-    width: 100%; height: 100%; background: #161b22; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 40px; color: #fff; font-weight: bold;
+
+.avatar-initial {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2dd4bf, #3b82f6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    font-weight: 700;
+    color: #fff;
+    border: 4px solid #1f2937;
 }
-.profile-name { color: #fff; font-size: 24px; margin-bottom: 5px; }
-.profile-role { color: #2dd4bf; font-size: 14px; margin-bottom: 30px; letter-spacing: 1px; text-transform: uppercase; }
 
-.profile-menu { width: 100%; display: flex; flex-direction: column; gap: 10px; }
-.menu-item {
-    background: transparent; border: none; color: #8b949e; padding: 12px; text-align: left;
-    border-radius: 12px; cursor: pointer; transition: 0.3s; font-size: 16px;
+/* Edit Avatar Düyməsi */
+.edit-avatar-btn {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: #2dd4bf;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #0f172a;
+    transition: 0.2s;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
-.menu-item:hover, .menu-item.active { background: rgba(45, 212, 191, 0.1); color: #2dd4bf; }
+.edit-avatar-btn:hover {
+    transform: scale(1.1);
+    background: #fff;
+}
 
-/* Content */
-.profile-content { flex: 2; min-width: 320px; }
-.section-title { color: #fff; font-size: 18px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
+.profile-fullname {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 0 5px;
+    color: #fff;
+}
 
-.info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-.info-card { background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; }
-.info-card label { display: block; color: #6b7280; font-size: 12px; margin-bottom: 5px; }
-.info-value { color: #fff; font-weight: 500; font-size: 16px; }
-
-.stats-row { display: flex; gap: 20px; }
-.stat-box { flex: 1; background: #0d1117; padding: 20px; border-radius: 16px; text-align: center; border: 1px solid #30363d; }
-.stat-num { display: block; font-size: 28px; font-weight: bold; color: #fff; }
-.stat-label { color: #8b949e; font-size: 12px; }
-.stat-box.highlight .stat-num { color: #f59e0b; }.profile-username {
-    color: #94a3b8;
+.profile-username {
+    color: #8b949e;
     font-size: 14px;
-    margin-top: -5px;
     margin-bottom: 20px;
 }
-.avatar-section {
-    position: relative;
+
+.profile-status-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    background: rgba(45, 212, 191, 0.1);
+    color: #2dd4bf;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid rgba(45, 212, 191, 0.2);
+}
+
+/* Avatar Input Sahəsi (Açılanda) */
+.avatar-input-container {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    animation: fadeIn 0.3s ease;
+}
+.avatar-input-container input {
+    flex: 1;
+    background: #0d1117;
+    border: 1px solid #30363d;
+    padding: 8px 12px;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 13px;
+    outline: none;
+}
+.save-avatar-btn {
+    background: #2dd4bf;
+    border: none;
+    border-radius: 8px;
+    padding: 0 12px;
+    cursor: pointer;
+    color: #0f172a;
+}
+
+/* --- SAĞ TƏRƏF: MƏLUMATLAR --- */
+.details-section {
     display: flex;
     flex-direction: column;
-    align-items: center;
-}
-.profile-img-real {
-    width: 100%; height: 100%; object-fit: cover; border-radius: 50%;
-}
-.edit-avatar-btn {
-    position: absolute; bottom: 5px; right: 5px;
-    background: #2dd4bf; border: none; color: #000;
-    width: 32px; height: 32px; border-radius: 50%;
-    cursor: pointer; display: flex; align-items: center; justify-content: center;
-    transition: 0.2s;
-}
-.edit-avatar-btn:hover { transform: scale(1.1); }
-.avatar-edit-box {
-    margin-top: 10px; display: flex; gap: 5px;
-}
-.avatar-edit-box input {
-    padding: 5px 10px; border-radius: 8px; border: none; font-size: 12px; width: 150px;
-}
-.avatar-edit-box button {
-    background: #2dd4bf; border: none; border-radius: 8px; padding: 5px 10px; cursor: pointer;
+    gap: 20px;
 }
 
-/* --- SAĞ TƏRƏF: RECENT ACTIVITY CARD --- */
-
-.recent-activity-card {
-    background: rgba(22, 27, 34, 0.6);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 24px;
-    width: 400px;
+/* info-group (Ağ qutular) */
+.info-group {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 20px;
     padding: 25px;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
-    /* Gecikmə ilə gəlsin */
-    animation: fadeInUp 0.8s ease forwards; 
 }
 
-.recent-header {
+.group-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
     padding-bottom: 15px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid #30363d;
 }
-
-.recent-header h3 {
+.group-header h3 {
+    margin: 0;
     font-size: 18px;
     color: #fff;
-    margin: 0;
 }
 
-.icon-box {
-    width: 32px; height: 32px;
-    background: rgba(45, 212, 191, 0.1);
-    border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
+/* Grid Form */
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
 }
 
-.view-all {
-    background: none;
-    border: none;
-    color: #94a3b8;
+.info-item label {
+    display: block;
     font-size: 12px;
-    cursor: pointer;
-    transition: 0.2s;
+    color: #8b949e;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
-.view-all:hover { color: #2dd4bf; }
 
-/* Siyahı */
-.recent-list {
+.info-value-box {
+    background: #0d1117;
+    border: 1px solid #30363d;
+    padding: 12px 16px;
+    border-radius: 10px;
+    color: #e6edf3;
+    font-size: 15px;
+    font-weight: 500;
     display: flex;
-    flex-direction: column;
-    gap: 15px;
+    align-items: center;
+    height: 48px;
 }
 
-.recent-item {
+.highlight-text {
+    color: #2dd4bf;
+    font-weight: 600;
+}
+
+/* Statistika Kartları */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.stat-card {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 16px;
+    padding: 20px;
     display: flex;
     align-items: center;
     gap: 15px;
-    padding: 10px;
+    transition: transform 0.2s;
+}
+.stat-card:hover {
+    transform: translateY(-5px);
+    border-color: #2dd4bf;
+}
+
+.stat-icon {
+    width: 45px;
+    height: 45px;
     border-radius: 12px;
-    transition: background 0.2s;
-    cursor: default;
+    background: rgba(45, 212, 191, 0.1);
+    color: #2dd4bf;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.recent-item:hover {
-    background: rgba(255, 255, 255, 0.03);
+.stat-info h4 {
+    margin: 0;
+    font-size: 20px;
+    color: #fff;
+}
+.stat-info p {
+    margin: 4px 0 0;
+    font-size: 12px;
+    color: #8b949e;
 }
 
-.recent-icon {
-    width: 40px; height: 40px;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-}
-.recent-icon.inc { background: rgba(16, 185, 129, 0.15); color: #10b981; }
-.recent-icon.exp { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
-
-.recent-info {
-    flex: 1;
-    display: flex; flex-direction: column;
+/* Animasiya */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-.recent-info h4 {
-    margin: 0 0 4px 0;
-    font-size: 14px;
-    color: #e2e8f0;
-}
-
-.recent-info span {
-    font-size: 11px;
-    color: #64748b;
-}
-
-.recent-amount {
-    font-weight: 700;
-    font-size: 15px;
-}
-.inc-text { color: #10b981; }
-.exp-text { color: #ef4444; }
-
-/* Mobil Uyğunluq */
-@media (max-width: 1100px) {
-    .recent-activity-card {
-        width: 100%;
+/* --- RESPONSIVE --- */
+@media (max-width: 900px) {
+    .profile-content {
+        grid-template-columns: 1fr; /* Alt-alta */
+    }
+    .profile-card {
         max-width: 100%;
-        margin-top: 30px;
+    }
+}
+
+@media (max-width: 600px) {
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+    .stats-grid {
+        grid-template-columns: 1fr;
     }
 }

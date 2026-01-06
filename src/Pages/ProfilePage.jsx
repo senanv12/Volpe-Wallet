@@ -1,123 +1,157 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useData } from '../Context/DataContext';
-import Header from '../Components/Header';
-import { Camera, Edit2, Save } from 'lucide-react'; // İkonlar
+import { useSettings } from '../Context/SettingsContext'; // <--- Tərcümə və Valyuta üçün
+import { Camera, Save, CreditCard, Wallet, Calendar, Mail, User, Shield } from 'lucide-react';
 import api from '../api';
 import './css/ProfilePage.css';
 
 const ProfilePage = () => {
-  const { user, cards } = useData();
-  const [isEditing, setIsEditing] = useState(false);
+  const { user, cards, setUser } = useData();
+  const { t, convertAmount, currentSymbol } = useSettings(); // <--- Ayarlar
+  
+  const [isEditingAvatar, setIsEditingAvatar] = useState(false);
   const [newAvatarUrl, setNewAvatarUrl] = useState('');
 
-  if (!user) return <div className="profile-container"><h1>Giriş edilməyib</h1></div>;
+  if (!user) return null;
 
-  // Təhlükəsiz məlumatlar
-  const safeName = user?.name || 'İstifadəçi';
-  const safeUsername = user?.username ? '@' + user.username.replace('@', '') : ''; // Username formatı
-  const safeEmail = user?.email || 'email@example.com';
-  const safeAvatar = user?.avatar; 
-  const safeInitial = user?.name ? user.name.charAt(0).toUpperCase() : 'U';
+  // --- HESABLAMALAR ---
+  // 1. Kartların cəmi balansını tapırıq (AZN ilə)
+  const totalBalanceAZN = useMemo(() => {
+    return Array.isArray(cards) 
+      ? cards.reduce((sum, card) => sum + (Number(card.balance) || 0), 0) 
+      : 0;
+  }, [cards]);
+
+  // 2. Seçilmiş valyutaya çeviririk
+  const displayBalance = convertAmount(totalBalanceAZN).toFixed(2);
   const cardCount = Array.isArray(cards) ? cards.length : 0;
 
-  // Profil şəklini yeniləmək
+  // --- MƏLUMATLAR ---
+  const safeName = user.name || 'İstifadəçi';
+  const safeUsername = user.username ? `@${user.username}` : '@username';
+  const safeEmail = user.email || 'email@example.com';
+  const safeAvatar = user.avatar;
+  const safeInitial = safeName.charAt(0).toUpperCase();
+  const joinDate = new Date(user.createdAt || Date.now()).toLocaleDateString('az-AZ', { year: 'numeric', month: 'long' });
+
+  // Avatar Yeniləmə
   const handleUpdateAvatar = async () => {
     if (!newAvatarUrl) return;
     try {
         const { data } = await api.put('/update-profile', { avatar: newAvatarUrl });
-        localStorage.setItem('user', JSON.stringify(data)); // LocalStorage yenilə
-        window.location.reload(); // Səhifəni yenilə ki, dəyişiklik görünsün
+        localStorage.setItem('user', JSON.stringify(data));
+        setUser(data);
+        setIsEditingAvatar(false);
+        setNewAvatarUrl('');
     } catch (error) {
-        alert("Xəta baş verdi");
+        console.error("Avatar xətası", error);
+        alert("Şəkil yenilənmədi. URL-i yoxlayın.");
     }
   };
 
   return (
-    <>
-      <Header />
-      <div className="profile-container">
-        <div className="blob blob-1"></div>
-        <div className="blob blob-2"></div>
+    <div className="profile-page-wrapper">
+      <div className="profile-glow"></div>
+      <div className="profile-glow-2"></div>
 
-        <div className="profile-dashboard">
-           {/* SOL TƏRƏF */}
-           <div className="profile-sidebar glass-panel">
-              <div className="avatar-section">
-                  <div className="avatar-ring large">
-                      {safeAvatar ? (
-                          <img src={safeAvatar} alt="Profile" className="profile-img-real" />
-                      ) : (
-                          <div className="profile-avatar">{safeInitial}</div>
-                      )}
-                      
-                      {/* Şəkil Dəyişmə Düyməsi */}
-                      <button className="edit-avatar-btn" onClick={() => setIsEditing(!isEditing)}>
-                          <Camera size={18} />
-                      </button>
-                  </div>
-                  
-                  {/* Şəkil URL Inputu (Edit rejimi) */}
-                  {isEditing && (
-                      <div className="avatar-edit-box fade-in-up">
-                          <input 
-                            type="text" 
-                            placeholder="Şəkil URL-i yapışdırın..." 
-                            value={newAvatarUrl}
-                            onChange={(e) => setNewAvatarUrl(e.target.value)}
-                          />
-                          <button onClick={handleUpdateAvatar}><Save size={16}/></button>
-                      </div>
-                  )}
-              </div>
+      <div className="profile-content">
+        
+        {/* --- SOL PANEL (Profil Kartı) --- */}
+        <div className="profile-card animate-fade-in">
+            <div className="avatar-wrapper">
+                {safeAvatar ? (
+                    <img src={safeAvatar} alt="Profile" className="avatar-img" />
+                ) : (
+                    <div className="avatar-initial">{safeInitial}</div>
+                )}
+                <button 
+                    className="edit-avatar-btn" 
+                    onClick={() => setIsEditingAvatar(!isEditingAvatar)}
+                    title={t('change_photo') || "Şəkli dəyiş"}
+                >
+                    <Camera size={18} />
+                </button>
+            </div>
 
-              <h2 className="profile-name">{safeName}</h2>
-              <p className="profile-username">{safeUsername}</p> {/* USERNAME GÖRÜNÜR */}
-              <p className="profile-role">Premium İstifadəçi</p>
-              
-              <div className="profile-menu">
-                 <button className="menu-item active">👤 Şəxsi Məlumatlar</button>
-                 <button className="menu-item">🛡️ Təhlükəsizlik</button>
-                 {/* Bildirişlər silindi */}
-              </div>
-           </div>
+            {isEditingAvatar && (
+                <div className="avatar-input-container">
+                    <input 
+                        type="text" 
+                        placeholder="URL..." 
+                        value={newAvatarUrl}
+                        onChange={(e) => setNewAvatarUrl(e.target.value)}
+                    />
+                    <button className="save-avatar-btn" onClick={handleUpdateAvatar}>
+                        <Save size={16} />
+                    </button>
+                </div>
+            )}
 
-           {/* SAĞ TƏRƏF */}
-           <div className="profile-content glass-panel">
-              <h3 className="section-title">Hesab Məlumatları</h3>
-              <div className="info-grid">
-                  <div className="info-card">
-                      <label>Ad Soyad</label>
-                      <div className="info-value">{safeName}</div>
-                  </div>
-                  <div className="info-card">
-                      <label>İstifadəçi adı</label>
-                      <div className="info-value highlight">{safeUsername}</div>
-                  </div>
-                  <div className="info-card">
-                      <label>E-poçt</label>
-                      <div className="info-value">{safeEmail}</div>
-                  </div>
-                  <div className="info-card">
-                      <label>Qeydiyyat</label>
-                      <div className="info-value">2024</div>
-                  </div>
-              </div>
-
-              <h3 className="section-title" style={{marginTop:'30px'}}>Statistika</h3>
-              <div className="stats-row">
-                  <div className="stat-box">
-                      <span className="stat-num">{cardCount}</span>
-                      <span className="stat-label">Aktiv Kart</span>
-                  </div>
-                  <div className="stat-box highlight">
-                      <span className="stat-num">4.8</span>
-                      <span className="stat-label">Reytinq</span>
-                  </div>
-              </div>
-           </div>
+            <h2 className="profile-fullname">{safeName}</h2>
+            <p className="profile-username">{safeUsername}</p>
+            <div className="profile-status-badge">Pro {t('account') || "Hesab"}</div>
         </div>
+
+        {/* --- SAĞ PANEL --- */}
+        <div className="details-section">
+            
+            {/* Statistika (Artıq Canlıdır) */}
+            <div className="stats-grid">
+                <div className="stat-card">
+                    <div className="stat-icon"><CreditCard size={24} /></div>
+                    <div className="stat-info">
+                        <h4>{cardCount}</h4>
+                        <p>{t('nav_cards')}</p>
+                    </div>
+                </div>
+                <div className="stat-card">
+                    <div className="stat-icon"><Wallet size={24} /></div>
+                    <div className="stat-info">
+                        {/* Daxili Balans = Volpe Kart Balansı */}
+                        <h4>{displayBalance} {currentSymbol}</h4>
+                        <p>{t('stat_balance')}</p>
+                    </div>
+                </div>
+                <div className="stat-card">
+                    <div className="stat-icon"><Shield size={24} /></div>
+                    <div className="stat-info">
+                        <h4>{t('active')}</h4>
+                        <p>{t('status')}</p>
+                    </div>
+                </div>
+            </div>
+
+            {/* Şəxsi Məlumatlar */}
+            <div className="info-group">
+                <div className="group-header">
+                    <h3>{t('profile_personal') || "Şəxsi Məlumatlar"}</h3>
+                </div>
+
+                <div className="info-grid">
+                    <div className="info-item">
+                        <label><User size={14} style={{verticalAlign:'middle'}}/> {t('name_surname') || "Ad Soyad"}</label>
+                        <div className="info-value-box">{safeName}</div>
+                    </div>
+                    <div className="info-item">
+                        <label><Mail size={14} style={{verticalAlign:'middle'}}/> {t('email') || "E-poçt"}</label>
+                        <div className="info-value-box">{safeEmail}</div>
+                    </div>
+                    <div className="info-item">
+                        <label>Username</label>
+                        <div className="info-value-box highlight-text">{safeUsername}</div>
+                    </div>
+                    <div className="info-item">
+                        <label><Calendar size={14} style={{verticalAlign:'middle'}}/> {t('joined') || "Qoşuldu"}</label>
+                        <div className="info-value-box">{joinDate}</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
       </div>
-    </>
+    </div>
   );
 };
+
 export default ProfilePage;

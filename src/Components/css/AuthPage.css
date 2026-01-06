@@ -1,134 +1,302 @@
-/* --- CONTAINER --- */
-.auth-container {
-  position: fixed;
-  top: 0; left: 0; width: 100vw; height: 100vh;
-  display: flex; align-items: center; justify-content: center;
-  background-color: #050505;
-  z-index: 9999;
-}
+/* --- AuthPage.css --- */
 
-.background-layer { position: absolute; inset: 0; z-index: 0; }
-
-.close-auth {
-  position: absolute; top: 30px; right: 30px;
-  background: rgba(255, 255, 255, 0.1); border: none; color: white;
-  padding: 10px; border-radius: 50%; cursor: pointer; z-index: 20;
-  transition: 0.3s;
-}
-.close-auth:hover { background: rgba(255, 255, 255, 0.2); transform: rotate(90deg); }
-
-/* --- CARD --- */
-.auth-card {
-  position: relative; z-index: 10;
-  width: 100%; max-width: 420px;
-  padding: 40px;
-  background: rgba(20, 20, 25, 0.6); /* Daha tünd, şüşə effekti */
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 24px;
-  text-align: center;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-  transition: height 0.3s ease;
-}
-
-.auth-header h1 { color: white; font-size: 28px; margin-bottom: 8px; font-weight: 700; }
-.auth-header p { color: #94a3b8; font-size: 14px; margin-bottom: 25px; }
-
-/* --- STEPPER DIZAYN --- */
-.stepper-indicator {
-    display: flex; align-items: center; justify-content: center;
-    margin-bottom: 30px; gap: 10px;
-}
-.step-dot {
-    width: 32px; height: 32px; border-radius: 50%;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    color: #6b7280;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 14px; font-weight: bold;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.step-dot.active {
-    border-color: #2dd4bf; color: #2dd4bf;
-    background: rgba(45, 212, 191, 0.1);
-    box-shadow: 0 0 15px rgba(45, 212, 191, 0.2);
-}
-.step-dot.completed {
-    background: #2dd4bf; border-color: #2dd4bf; color: #000;
-}
-
-.step-line {
-    width: 60px; height: 2px;
-    background: rgba(255,255,255,0.1);
-    border-radius: 2px;
-    position: relative;
+/* Bütün ekranı tutan konteyner (Tərpənməz) */
+.auth-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #050505;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
     overflow: hidden;
 }
-.step-line.filled { background: #2dd4bf; }
 
-/* --- INPUTS --- */
-.input-group { position: relative; margin-bottom: 16px; width: 100%; }
-.icon-wrapper {
-  position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
-  color: #64748b; pointer-events: none; z-index: 2;
+/* 1. ARXA PLAN (DarkVeil) - Tamamilə arxada */
+.auth-background {
+    position: fixed; /* Absolute yox, Fixed */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
 }
 
-.input-group input {
-  width: 100%; padding: 14px 14px 14px 50px;
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 14px;
-  color: white; font-size: 16px; outline: none;
-  transition: all 0.3s;
-}
-.input-group input:focus {
-  border-color: #2dd4bf; background: rgba(0, 0, 0, 0.5);
-  box-shadow: 0 0 0 4px rgba(45, 212, 191, 0.1);
+/* 2. ÖN PLAN (Kart Konteyneri) */
+.auth-card-container {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
 }
 
-/* Username Xüsusi Stil */
-.username-group .at-prefix {
-    position: absolute; left: 48px; top: 50%; transform: translateY(-50%);
-    color: #2dd4bf; font-weight: bold; font-size: 16px; z-index: 2;
+/* ÇIXIŞ DÜYMƏSİ */
+.close-auth {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+    z-index: 20;
 }
-.username-input { padding-left: 65px !important; }
+.close-auth:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+}
 
-/* --- BUTTONS & ACTIONS --- */
-.form-actions { display: flex; gap: 10px; margin-top: 20px; }
+/* KART DİZAYNI */
+.auth-card {
+    background: rgba(22, 27, 34, 0.65);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+    border-radius: 24px;
+    padding: 40px;
+    width: 100%;
+    max-width: 420px;
+    color: #ffffff;
+    animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Typography */
+.auth-header { text-align: center; margin-bottom: 30px; }
+.auth-header h2 { font-size: 28px; margin-bottom: 8px; color: #fff; font-weight: 700; }
+.auth-header p { color: #94a3b8; font-size: 14px; }
+
+/* INPUT SAHƏLƏRİ - Burası çox vacibdir */
+.form-group { margin-bottom: 20px; text-align: left; }
+.form-group label { display: block; margin-bottom: 8px; color: #cbd5e1; font-size: 13px; font-weight: 500; }
+
+.input-wrapper {
+    display: flex; align-items: center;
+    background: rgba(13, 17, 23, 0.8); /* Tünd fon */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px; 
+    padding: 0 12px; 
+    transition: 0.3s;
+    height: 50px;
+}
+.input-wrapper:focus-within { 
+    border-color: #2dd4bf; 
+    box-shadow: 0 0 0 2px rgba(45, 212, 191, 0.2); 
+    background: rgba(13, 17, 23, 1);
+}
+
+.icon-wrapper { color: #64748b; margin-right: 12px; display: flex; align-items: center; }
+
+/* Inputun özü - Yazı rəngi ağ olmalıdır */
+.input-wrapper input {
+    width: 100%; 
+    height: 100%;
+    background: transparent !important; 
+    border: none;
+    color: #ffffff !important; /* Yazı mütləq ağ olsun */
+    font-size: 16px; 
+    outline: none;
+}
+/* Inputun placeholder rəngi */
+.input-wrapper input::placeholder { color: #6e7681; }
+
+/* Avtomatik doldurma zamanı fon rənginin dəyişməsinin qarşısını almaq */
+.input-wrapper input:-webkit-autofill,
+.input-wrapper input:-webkit-autofill:hover, 
+.input-wrapper input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #ffffff;
+  -webkit-box-shadow: 0 0 0px 1000px #0d1117 inset;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Username Xüsusi */
+.username-box { padding: 0 15px; }
+.username-input { font-size: 18px !important; font-weight: 700; color: #2dd4bf !important; text-align: center; }
+.center-label { text-align: center; color: #2dd4bf !important; }
+
+/* DÜYMƏLƏR */
+.form-actions { display: flex; gap: 10px; margin-top: 25px; }
 
 .submit-btn {
-  flex: 1; padding: 14px;
-  background: linear-gradient(135deg, #2dd4bf, #0d9488);
-  color: #0f172a; border: none; border-radius: 12px;
-  font-weight: 700; font-size: 16px;
-  display: flex; align-items: center; justify-content: center; gap: 10px;
-  cursor: pointer; transition: 0.3s;
+    flex: 1; padding: 14px;
+    background: linear-gradient(135deg, #2dd4bf, #0d9488);
+    color: #0f172a; border: none; border-radius: 12px;
+    font-weight: 700; font-size: 16px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: 0.3s;
 }
-.submit-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(45, 212, 191, 0.3); }
+.submit-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(45, 212, 191, 0.3); }
 .submit-btn:disabled { opacity: 0.7; cursor: not-allowed; }
 
 .prev-btn {
     width: 50px; display: flex; align-items: center; justify-content: center;
     background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 12px; color: white; cursor: pointer; transition: 0.3s;
+    border-radius: 12px; color: white; cursor: pointer;
 }
 .prev-btn:hover { background: rgba(255,255,255,0.1); }
 
-/* --- FOOTER & ERROR --- */
-.auth-footer { margin-top: 25px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); }
-.toggle-btn { background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 14px; transition: 0.3s; }
-.toggle-btn:hover { color: #2dd4bf; }
+/* Footer */
+.auth-footer { margin-top: 25px; text-align: center; }
+.toggle-btn {
+    background: none; border: none; color: #2dd4bf; font-weight: 600; cursor: pointer; font-size: 14px;
+}
+.toggle-btn:hover { text-decoration: underline; color: #5eead4; }
 
-.error-message {
+/* Xəta Mesajı */
+.auth-error {
     background: rgba(239, 68, 68, 0.15); color: #fca5a5;
-    padding: 10px; border-radius: 8px; margin-bottom: 20px; font-size: 13px;
-    border: 1px solid rgba(239, 68, 68, 0.2);
+    padding: 12px; border-radius: 8px; margin-bottom: 20px;
+    font-size: 13px; text-align: center; border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
-/* --- ANIMATIONS --- */
-@keyframes slideIn {
-    from { opacity: 0; transform: translateX(20px); }
-    to { opacity: 1; transform: translateX(0); }
+.spin { animation: spin 1s linear infinite; }
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+/* --- AuthPage.css --- */
+
+.auth-wrapper {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    display: flex; justify-content: center; align-items: center;
+    background-color: #050505; z-index: 2000; overflow: hidden;
 }
-.animate-in { animation: slideIn 0.4s ease-out forwards; }
+
+.auth-background {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 0; pointer-events: none;
+}
+
+.auth-card-container {
+    position: relative; z-index: 10;
+    width: 100%; height: 100%;
+    display: flex; justify-content: center; align-items: center;
+    padding: 20px;
+}
+
+.close-auth {
+    position: absolute; top: 30px; right: 30px;
+    background: rgba(255, 255, 255, 0.1); border: none; color: white;
+    width: 40px; height: 40px; border-radius: 50%;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: 0.3s; z-index: 20;
+}
+.close-auth:hover { background: rgba(255, 255, 255, 0.2); transform: rotate(90deg); }
+
+/* --- KART DİZAYNI --- */
+.auth-card {
+    background: rgba(22, 27, 34, 0.65);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+    border-radius: 24px;
+    padding: 40px;
+    width: 100%; max-width: 400px; /* Default Desktop */
+    color: #ffffff;
+    animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Typography & Inputs */
+.auth-header { text-align: center; margin-bottom: 30px; }
+.auth-header h2 { font-size: 28px; margin-bottom: 8px; color: #fff; font-weight: 700; }
+.auth-header p { color: #94a3b8; font-size: 14px; }
+
+.form-group { margin-bottom: 20px; text-align: left; }
+.form-group label { display: block; margin-bottom: 8px; color: #cbd5e1; font-size: 13px; font-weight: 500; }
+
+.input-wrapper {
+    display: flex; align-items: center;
+    background: rgba(13, 17, 23, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px; padding: 0 12px; transition: 0.3s; height: 50px;
+}
+.input-wrapper:focus-within { border-color: #2dd4bf; box-shadow: 0 0 0 2px rgba(45, 212, 191, 0.2); background: rgba(13, 17, 23, 1); }
+
+.icon-wrapper { color: #64748b; margin-right: 12px; display: flex; align-items: center; }
+.input-wrapper input {
+    width: 100%; height: 100%; background: transparent !important; border: none;
+    color: #ffffff !important; font-size: 16px; outline: none;
+}
+.input-wrapper input::placeholder { color: #6e7681; }
+
+/* Buttons */
+.form-actions { display: flex; gap: 10px; margin-top: 25px; }
+.submit-btn {
+    flex: 1; padding: 14px; background: linear-gradient(135deg, #2dd4bf, #0d9488);
+    color: #0f172a; border: none; border-radius: 12px;
+    font-weight: 700; font-size: 16px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.3s;
+}
+.submit-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(45, 212, 191, 0.3); }
+
+.prev-btn {
+    width: 50px; display: flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px; color: white; cursor: pointer;
+}
+
+.auth-footer { margin-top: 25px; text-align: center; }
+.toggle-btn { background: none; border: none; color: #2dd4bf; font-weight: 600; cursor: pointer; font-size: 14px; }
+.toggle-btn:hover { text-decoration: underline; color: #5eead4; }
+.auth-error {
+    background: rgba(239, 68, 68, 0.15); color: #fca5a5; padding: 12px;
+    border-radius: 8px; margin-bottom: 20px; font-size: 13px; text-align: center;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.spin { animation: spin 1s linear infinite; }
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+/* =========================================
+   RESPONSIVE (Sizin istədiyiniz ölçülər)
+   ========================================= */
+
+/* Mobile (360px – 767px) */
+@media (max-width: 767px) {
+    .auth-card {
+        padding: 25px 20px; /* Daha az padding */
+        max-width: 90%; /* Ekranın 90%-i */
+        border-radius: 20px;
+    }
+    .auth-header h2 { font-size: 24px; }
+    .close-auth { top: 20px; right: 20px; width: 35px; height: 35px; }
+    .input-wrapper { height: 45px; } /* Inputlar biraz kiçik */
+    .submit-btn { font-size: 15px; padding: 12px; }
+}
+
+/* Tablet (768px – 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .auth-card {
+        max-width: 450px; /* Tablet üçün biraz geniş */
+        padding: 35px;
+    }
+    .auth-header h2 { font-size: 26px; }
+}
+
+/* Desktop (1024px – 1439px) və yuxarı */
+@media (min-width: 1024px) {
+    .auth-card { max-width: 420px; }
+}
