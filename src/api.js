@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // 1. Axios instansiyası yaradırıq
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api', // Backend ünvanı
+  baseURL: `${import.meta.env.VITE_API_URL}/api/users`, // Backend ünvanı
   headers: {
     'Content-Type': 'application/json',
   },
