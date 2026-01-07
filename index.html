@@ -9,6 +9,7 @@
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
 
     <style>
         :root {
@@ -17,7 +18,6 @@
             --accent-green-btn: #a3e635;
             --text-light: #e6edf3;
             --text-muted: #8b949e;
-            /* Footer üçün eyni rəngi istifadə edirik ki, kəsilmə görünməsin */
             --footer-bg: #0D1117; 
         }
 
@@ -27,7 +27,8 @@
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-light);
-            overflow-x: hidden; /* Yalnız eninə daşmanın qarşısını alırıq */
+            overflow-x: hidden;
+            scroll-behavior: smooth; 
         }
 
         /* --- NAVİQASİYA --- */
@@ -43,7 +44,7 @@
             border-radius: 50px;
             border: 1px solid rgba(255,255,255,0.1);
         }
-        .nav-logo { font-weight: 800; display: flex; align-items: center; gap: 5px; color: var(--text-light); }
+        .nav-logo { font-weight: 800; display: flex; align-items: center; gap: 5px; color: var(--text-light); cursor: pointer; }
         .nav-links { display: flex; gap: 20px; font-size: 0.9rem; font-weight: 500; }
         .nav-links a { text-decoration: none; color: var(--text-light); opacity: 0.8; transition: opacity 0.3s; }
         .nav-links a:hover { opacity: 1; }
@@ -53,7 +54,7 @@
             font-size: 0.9rem; font-weight: 600; text-decoration: none;
         }
 
-        /* --- HERO BÖLMƏSİ --- */
+
         .hero-section {
             width: 100%; height: 100vh;
             position: relative; display: flex;
@@ -109,7 +110,7 @@
             top: 60%; right: -10%; transform: rotate(20deg);
         }
 
-        /* --- YENİ VOLPE (KARTLAR) BÖLMƏSİ --- */
+
         .volpe-cards-section {
             position: relative;
             width: 100%;
@@ -117,7 +118,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            /* DÜZƏLİŞ: Overflow hidden-i ehtiyatlı işlədirik */
             overflow: visible; 
             
             background: linear-gradient(180deg, var(--bg-color) 0%, rgba(13, 17, 23, 0) 25%),
@@ -125,7 +125,6 @@
             
             margin-top: -20vh; 
             padding-top: 20vh;
-            /* DÜZƏLİŞ: Aşağı hissədə kəsilməməsi üçün böyük padding veririk */
             padding-bottom: 150px; 
             z-index: 10;
         }
@@ -167,7 +166,7 @@
         }
         .green-btn:hover { transform: scale(1.05); }
 
-        /* Kartların Konteyneri */
+
         .floating-cards-container {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -191,11 +190,9 @@
         .fc-5 { top: 60%; right: -3%; transform: rotate(-10deg); }
         .fc-6 { bottom: 5%; right: 10%; transform: rotate(15deg); width: 210px; }
 
-        /* --- FOOTER STYLES --- */
+    
         footer {
             background-color: var(--footer-bg);
-            /* Üst xətt silindi ki, keçid tam görünməz olsun */
-            /* border-top: 1px solid rgba(255, 255, 255, 0.05); */
             padding: 40px 20px 40px;
             position: relative;
             z-index: 20;
@@ -204,6 +201,7 @@
         .footer-container {
             max-width: 1200px;
             margin: 0 auto;
+            padding-top: 50px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -224,8 +222,6 @@
             font-size: 1rem;
             line-height: 1.6;
         }
-
-        /* Sosial Media İkonları */
         .social-links {
             display: flex;
             gap: 20px;
@@ -269,12 +265,14 @@
 <body>
 
     <nav>
-        <div class="nav-logo">VOLPE ↗</div>
-        <div class="nav-links">
-            <a href="#">Haqqımızda</a>
-            <a href="#">Portfolio</a>
+        <div class="nav-logo" onclick="window.location.href='index.html'">
+            <img src="assets/icon.png" alt="Volpe Logo" style="width: 35px; height: 35px; object-fit: contain;">
+            <span style="font-size: 20px; font-weight: 800; color: #FF5722; letter-spacing: 1px; font-family: 'Inter', sans-serif;">VOLPE</span>
         </div>
-        <a href="#" class="nav-btn" onclick="window.location.href='/login'">✦ Daxil Ol</a>
+        <div class="nav-links">
+            <a href="javascript:void(0)" onclick="scrollToFooter()">Haqqımızda</a>
+        </div>
+        <a href="#" class="nav-btn" onclick="window.location.href='/app.html'">✦ Daxil Ol</a>
     </nav>
 
     <section class="hero-section" id="hero">
@@ -322,7 +320,7 @@
 
     </section>
 
-    <footer>
+    <footer id="about-footer">
         <div class="footer-container">
             
             <div class="footer-logo">VOLPE ↗</div>
@@ -353,7 +351,7 @@
     <script>
         gsap.registerPlugin(ScrollTrigger);
 
-        // --- HERO ANIMATION ---
+        
         let heroTl = gsap.timeline({
             scrollTrigger: {
                 trigger: "#hero", 
@@ -369,8 +367,14 @@
         heroTl.to("#ribbonLeft", { x: -200, opacity: 0, duration: 0.8 }, 0);
         heroTl.to("#ribbonRight", { x: 200, opacity: 0, duration: 0.8 }, 0);
 
-
-        // --- VOLPE SECTION ANIMATION (Parallax) ---
+        function scrollToFooter() {
+    gsap.to(window, {
+        duration: 1.5,          
+        scrollTo: "#about-footer", 
+        ease: "power2.inOut"  
+    });
+}
+        
         gsap.to(".fc-1", { y: -80, scrollTrigger: { trigger: "#volpeSection", start: "top 80%", end: "bottom top", scrub: 1 } });
         gsap.to(".fc-2", { y: -40, scrollTrigger: { trigger: "#volpeSection", start: "top 80%", end: "bottom top", scrub: 1 } });
         gsap.to(".fc-3", { y: -100, scrollTrigger: { trigger: "#volpeSection", start: "top 80%", end: "bottom top", scrub: 1 } });

@@ -1,30 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Mail, Lock, User, ArrowRight, ArrowLeft, X, Loader, AtSign, Check } from 'lucide-react';
-import DarkVeil from '../Components/Backgrounds/DarkVeil';
+import { Mail, Lock, User, ArrowRight, ArrowLeft, X, Loader, AtSign } from 'lucide-react';
 import api from '../api';
+import { useData } from '../Context/DataContext';
 import './css/AuthPage.css';
+import DarkVeil from '../Components/Backgrounds/DarkVeil'; 
 
 const AuthPage = ({ mode }) => {
   const navigate = useNavigate();
+  const { setUser, fetchInitialData } = useData(); 
+  
   const [isLogin, setIsLogin] = useState(mode === 'login');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  
-  // Stepper State (Yalnız Qeydiyyat üçün)
   const [currentStep, setCurrentStep] = useState(1);
 
-  // Form Data
   const [formData, setFormData] = useState({
-    fullName: '',
-    email: '',
-    password: '',
-    username: ''
+    fullName: '', email: '', password: '', username: ''
   });
 
   useEffect(() => {
     setIsLogin(mode === 'login');
-    setCurrentStep(1); // Mode dəyişəndə step-i sıfırla
+    setCurrentStep(1); 
     setError('');
   }, [mode]);
 
@@ -33,180 +30,158 @@ const AuthPage = ({ mode }) => {
     setError('');
   };
 
-  // Login/Signup keçidi
   const handleToggle = () => {
-    const targetPath = isLogin ? '/signup' : '/login';
-    navigate(targetPath);
+    navigate(isLogin ? '/signup' : '/login');
+    setIsLogin(!isLogin);
   };
 
-  // Username formatlama (@ işarəsini avtomatik idarə etmək)
   const handleUsernameChange = (e) => {
-    let val = e.target.value.replace(/\s/g, ''); // Boşluqları sil
-    if (val.startsWith('@')) val = val.substring(1);
-    setFormData({ ...formData, username: val });
+      const val = e.target.value.toLowerCase().replace(/[^a-z0-9_.]/g, '');
+      setFormData({ ...formData, username: val });
   };
 
-  // STEPPER NAVİQASİYASI
-  const handleNextStep = (e) => {
-    e.preventDefault();
-    if (!formData.email || !formData.password) {
-      setError("Zəhmət olmasa E-poçt və Şifrəni daxil edin.");
-      return;
-    }
-    setError('');
-    setCurrentStep(2);
+  const handlePrevStep = () => { setCurrentStep(1); setError(''); };
+
+  const handleNextStep = () => {
+     if(!formData.fullName || !formData.email || !formData.password) {
+         setError("Zəhmət olmasa bütün sahələri doldurun.");
+         return;
+     }
+     setCurrentStep(2);
+     setError('');
   };
 
-  const handlePrevStep = () => {
-    setError('');
-    setCurrentStep(1);
+  // Çıxış
+  const handleClose = () => {
+    window.location.href = '/'; 
   };
 
-  // API SUBMIT
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
 
-    const endpoint = isLogin ? '/login' : '/signup';
-    
-    // Username-i payload-a @ ilə əlavə edirik (əgər signup-dırsa)
-    const payload = isLogin ? formData : {
-        ...formData,
-        username: `@${formData.username}`
-    };
+    // --- CİDDİ VALIDASİYA (BURASI VACİBDİR) ---
+    if (isLogin) {
+        // Login üçün sadəcə email və şifrə lazımdır
+        if (!formData.email || !formData.password) {
+            setError("E-poçt və şifrəni daxil edin.");
+            setLoading(false);
+            return;
+        }
+    } else {
+        // Signup üçün HAMISI lazımdır (xüsusilə username)
+        if (!formData.fullName || !formData.email || !formData.password || !formData.username) {
+            setError("Bütün sahələri, o cümlədən istifadəçi adını doldurun.");
+            setLoading(false);
+            return;
+        }
+    }
 
     try {
-      const response = await api.post(endpoint, payload);
-      if (response.data) {
-        localStorage.setItem('user', JSON.stringify(response.data));
-        navigate('/dashboard');
-        window.location.reload();
-      }
+      const endpoint = isLogin ? '/users/login' : '/users/signup';
+      
+      const payload = isLogin 
+        ? { email: formData.email, password: formData.password }
+        : { 
+            fullName: formData.fullName, 
+            username: formData.username, 
+            email: formData.email, 
+            password: formData.password 
+          };
+        
+      const { data } = await api.post(endpoint, payload);
+      
+      localStorage.setItem('user', JSON.stringify(data));
+      if (setUser) setUser(data);
+      if (fetchInitialData) await fetchInitialData();
+      
+      navigate('/dashboard');
+
     } catch (err) {
       console.error("Auth Error:", err);
-      setError(err.response?.data?.message || "Xəta baş verdi. Məlumatları yoxlayın.");
+      setError(err.response?.data?.message || 'Xəta baş verdi.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="auth-container">
-      {/* Background - DarkVeil Saxlanılıb */}
-      <div className="background-layer">
-        <DarkVeil 
-            active={true} 
-            opacity={0.5} 
-            depth={8} 
-            color="#2dd4bf" 
-            scanlineIntensity={0.1} 
-        />
+    <div className="auth-wrapper">
+      <div className="auth-background">
+        <DarkVeil />
       </div>
 
-      <button className="close-auth" onClick={() => window.location.href = '/'}>
-        <X size={24} />
-      </button>
+      <div className="auth-card-container">
+        <button className="close-auth" onClick={handleClose}><X size={24} /></button>
 
-      <div className="auth-card stepper-card">
-        {/* HEADER */}
-        <div className="auth-header">
-          <h1>{isLogin ? 'Xoş Gəldiniz' : 'Hesab Yaradın'}</h1>
-          <p>{isLogin ? 'Davam etmək üçün daxil olun' : 'Rəqəmsal pulqabınıza addım atın'}</p>
-        </div>
-
-        {/* STEPPER INDICATOR (Yalnız Sign Up rejimində görünür) */}
-        {!isLogin && (
-          <div className="stepper-indicator">
-             <div className={`step-dot ${currentStep >= 1 ? 'active' : ''} ${currentStep > 1 ? 'completed' : ''}`}>
-                {currentStep > 1 ? <Check size={14}/> : '1'}
-             </div>
-             <div className={`step-line ${currentStep === 2 ? 'filled' : ''}`}></div>
-             <div className={`step-dot ${currentStep === 2 ? 'active' : ''}`}>2</div>
+        <div className="auth-card">
+          <div className="auth-header">
+            <h2>{isLogin ? 'Xoş Gəldiniz' : 'Hesab Yarat'}</h2>
+            <p>{isLogin ? 'Davam etmək üçün giriş edin' : 'Volpe dünyasına qoşulun'}</p>
           </div>
-        )}
 
-        {error && (
-          <div className="error-message">
-            {error}
-          </div>
-        )}
+          {error && <div className="auth-error">{error}</div>}
 
-        <form onSubmit={isLogin ? handleSubmit : (currentStep === 2 ? handleSubmit : handleNextStep)} className="auth-form">
-          
-          {/* --- LOGIN FORMASI --- */}
-          {isLogin && (
-            <div className="form-step active-step">
-                <div className="input-group">
-                    <div className="icon-wrapper"><Mail size={20} /></div>
-                    <input name="email" type="email" placeholder="E-poçt ünvanı" value={formData.email} onChange={handleChange} required />
+          <form onSubmit={handleSubmit}>
+            {(isLogin || currentStep === 1) && (
+              <>
+                {!isLogin && (
+                   <div className="form-group">
+                      <label>Ad Soyad</label>
+                      <div className="input-wrapper">
+                          <div className="icon-wrapper"><User size={20} /></div>
+                          <input name="fullName" placeholder="Adınız" value={formData.fullName} onChange={handleChange} autoFocus={!isLogin} />
+                      </div>
+                   </div>
+                )}
+                <div className="form-group">
+                  <label>E-poçt</label>
+                  <div className="input-wrapper">
+                      <div className="icon-wrapper"><Mail size={20} /></div>
+                      <input name="email" type="email" placeholder="mail@example.com" value={formData.email} onChange={handleChange} />
+                  </div>
                 </div>
-                <div className="input-group">
-                    <div className="icon-wrapper"><Lock size={20} /></div>
-                    <input name="password" type="password" placeholder="Şifrə" value={formData.password} onChange={handleChange} required />
+                <div className="form-group">
+                  <label>Şifrə</label>
+                  <div className="input-wrapper">
+                      <div className="icon-wrapper"><Lock size={20} /></div>
+                      <input name="password" type="password" placeholder="••••••••" value={formData.password} onChange={handleChange} />
+                  </div>
                 </div>
-            </div>
-          )}
-
-          {/* --- SIGN UP: STEP 1 (Credentials) --- */}
-          {!isLogin && currentStep === 1 && (
-            <div className="form-step animate-in">
-                <div className="input-group">
-                    <div className="icon-wrapper"><Mail size={20} /></div>
-                    <input name="email" type="email" placeholder="E-poçt ünvanı" value={formData.email} onChange={handleChange} autoFocus />
-                </div>
-                <div className="input-group">
-                    <div className="icon-wrapper"><Lock size={20} /></div>
-                    <input name="password" type="password" placeholder="Şifrə" value={formData.password} onChange={handleChange} />
-                </div>
-            </div>
-          )}
-
-          {/* --- SIGN UP: STEP 2 (Personal Info + Username) --- */}
-          {!isLogin && currentStep === 2 && (
-             <div className="form-step animate-in">
-                <div className="input-group">
-                    <div className="icon-wrapper"><User size={20} /></div>
-                    <input name="fullName" type="text" placeholder="Ad Soyad" value={formData.fullName} onChange={handleChange} autoFocus />
-                </div>
-                
-                {/* YENİ USERNAME SAHƏSİ */}
-                <div className="input-group username-group">
-                    <div className="icon-wrapper"><AtSign size={20} /></div>
-                    <span className="at-prefix">@</span>
-                    <input 
-                        name="username" 
-                        type="text" 
-                        placeholder="username" 
-                        className="username-input"
-                        value={formData.username} 
-                        onChange={handleUsernameChange} 
-                    />
-                </div>
-             </div>
-          )}
-
-          {/* BUTTONS */}
-          <div className="form-actions">
-            {!isLogin && currentStep === 2 && (
-                <button type="button" className="prev-btn" onClick={handlePrevStep}>
-                    <ArrowLeft size={20} />
-                </button>
+              </>
             )}
 
-            <button type="submit" className="submit-btn" disabled={loading}>
-                {loading ? <Loader className="animate-spin" size={20} /> : (
-                    isLogin ? 'Daxil Ol' : (currentStep === 1 ? 'Növbəti' : 'Tamamla')
-                )}
-                {!loading && (currentStep === 1 || isLogin) && <ArrowRight size={20} />}
+            {!isLogin && currentStep === 2 && (
+               <div className="form-group slide-in">
+                  <label className="center-label">İstifadəçi adı seçin</label>
+                  <div className="input-wrapper username-box">
+                      <div className="icon-wrapper"><AtSign size={20} color="#2dd4bf" /></div>
+                      <input name="username" type="text" placeholder="username" className="username-input" value={formData.username} onChange={handleUsernameChange} autoFocus />
+                  </div>
+                  <p className="hint-text">Kiçik hərflər, rəqəmlər və alt xətt.</p>
+               </div>
+            )}
+
+            <div className="form-actions">
+              {!isLogin && currentStep === 2 && (
+                  <button type="button" className="prev-btn" onClick={handlePrevStep}><ArrowLeft size={20} /></button>
+              )}
+              {!isLogin && currentStep === 1 ? (
+                  <button type="button" className="submit-btn" onClick={handleNextStep}>Növbəti <ArrowRight size={20} /></button>
+              ) : (
+                  <button type="submit" className="submit-btn" disabled={loading}>
+                      {loading ? <Loader className="spin" size={20} /> : (isLogin ? 'Daxil Ol' : 'Tamamla')}
+                  </button>
+              )}
+            </div>
+          </form>
+
+          <div className="auth-footer">
+            <button className="toggle-btn" type="button" onClick={handleToggle}>
+              {isLogin ? "Hesabınız yoxdur? Qeydiyyat" : "Artıq hesabınız var? Giriş"}
             </button>
           </div>
-        </form>
-
-        <div className="auth-footer">
-          <button className="toggle-btn" onClick={handleToggle}>
-            {isLogin ? "Hesabınız yoxdur? Qeydiyyat" : "Artıq hesabınız var? Giriş"}
-          </button>
         </div>
       </div>
     </div>

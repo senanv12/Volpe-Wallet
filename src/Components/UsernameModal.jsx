@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import api from '../api';
-import './InputCard.css'; // Stil üçün InputCard.css istifadə edə bilərik
+import './InputCard.css'; 
 
 const UsernameModal = ({ user, onClose, onUpdateUser }) => {
   const [username, setUsername] = useState('');
@@ -14,13 +14,10 @@ const UsernameModal = ({ user, onClose, onUpdateUser }) => {
     }
 
     try {
-      // Backend-ə username göndəririk (Real API lazımdır)
-      // const res = await api.post('/set-username', { userId: user._id, username });
-      
-      // Simulyasiya edirik:
+
       const updatedUser = { ...user, username: username };
       localStorage.setItem('user', JSON.stringify(updatedUser));
-      onUpdateUser(updatedUser); // App.js-də user state-i yeniləyir
+      onUpdateUser(updatedUser); 
       onClose();
       alert("Username uğurla yaradıldı: " + username);
     } catch (err) {

@@ -2,8 +2,8 @@ import React, { useRef, useState } from "react";
 
 const TiltedCard = ({ 
   children, 
-  rotateAmplitude = 3, // Dönmə dərəcəsi
-  scaleOnHover = 1.1,  // Böyümə dərəcəsi
+  rotateAmplitude = 3,
+  scaleOnHover = 1.1,  
   className = "" 
 }) => {
   const ref = useRef(null);
@@ -46,13 +46,13 @@ const TiltedCard = ({
       style={{
         perspective: "1000px",
         transformStyle: "preserve-3d",
-        transition: "transform 0.1s ease-out", // Mouse hərəkəti üçün sürətli reaksiya
+        transition: "transform 0.1s ease-out", 
       }}
     >
       <div
         style={{
           transform: `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(${scale})`,
-          transition: "transform 0.4s cubic-bezier(0.03, 0.98, 0.52, 0.99)", // Hamar keçid
+          transition: "transform 0.4s cubic-bezier(0.03, 0.98, 0.52, 0.99)", 
           transformStyle: "preserve-3d",
           width: "100%",
           height: "100%"

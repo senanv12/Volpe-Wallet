@@ -1,0 +1,404 @@
+/* --- Overlay --- */
+.chat-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.4); /* Daha şəffaf fon */
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: flex-end; /* Sağ tərəfə çəkirik */
+    align-items: flex-end;    /* Aşağı tərəfə çəkirik */
+    z-index: 3000;
+    padding: 0 30px 100px 0; /* Düymənin üstündə qalması üçün padding */
+}
+
+/* --- Modalın Özü --- */
+.chat-modal-content {
+    background: #161b22;
+    width: 400px; /* Daha dar, çat pəncərəsi kimi */
+    height: 550px;
+    border-radius: 24px;
+    display: flex;
+    flex-direction: column; /* Şaquli düzülüş */
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    animation: chatSlideIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+}
+
+@keyframes chatSlideIn {
+    from { transform: translateY(20px) scale(0.95); opacity: 0; }
+    to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+/* --- Başlıq Hissəsi --- */
+.chat-main-header {
+    padding: 16px 20px;
+    background: #0d1117;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chat-current-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.chat-avatar-small {
+    width: 35px;
+    height: 35px;
+    border-radius: 12px;
+    background: #2dd4bf;
+    color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+/* --- İstifadəçi Əlavə Etmə Paneli --- */
+.chat-modal-sidebar {
+    background: #0d1117;
+    padding: 10px 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.chat-sidebar-header h4 { display: none; } /* Lazımsız başlığı gizlət */
+
+.chat-search-input {
+    display: flex;
+    background: #1f2937;
+    border-radius: 12px;
+    padding: 8px 12px;
+    gap: 8px;
+}
+
+.chat-search-input input {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 13px;
+    flex: 1;
+    outline: none;
+}
+
+/* --- Mesaj Sahəsi --- */
+.chat-main-body {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background: #0d1117;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    scrollbar-width: thin;
+    scrollbar-color: #30363d transparent;
+}
+
+.chat-bubble-row { display: flex; width: 100%; }
+.chat-bubble-row.me { justify-content: flex-end; }
+
+.chat-bubble {
+    max-width: 80%;
+    padding: 10px 14px;
+    border-radius: 16px;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.me .chat-bubble {
+    background: #2dd4bf;
+    color: #000;
+    border-bottom-right-radius: 4px;
+}
+
+.other .chat-bubble {
+    background: #21262d;
+    color: #fff;
+    border-bottom-left-radius: 4px;
+}
+
+.chat-bubble-time {
+    font-size: 10px;
+    opacity: 0.6;
+    margin-top: 4px;
+    display: block;
+    text-align: right;
+}
+
+/* --- Input Hissəsi --- */
+.chat-main-footer {
+    padding: 15px;
+    background: #0d1117;
+    display: flex;
+    gap: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.chat-main-footer input {
+    flex: 1;
+    background: #1f2937;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 10px 15px;
+    color: white;
+    outline: none;
+}
+
+.chat-main-footer button {
+    background: #2dd4bf;
+    color: #000;
+    border: none;
+    padding: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chat-close-btn {
+    background: none;
+    border: none;
+    color: #8b949e;
+    cursor: pointer;
+    padding: 5px;
+}
+
+/* --- Boş Ekran --- */
+.chat-empty-state {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #484f58;
+    text-align: center;
+    padding: 40px;
+}
+
+/* Çat pəncərəsinin əsas mətn rəngi */
+.chat-modal-content {
+    color: #ffffff !important;
+}
+
+/* Kontakt adları və mesaj önizləməsi */
+.chat-contact-name {
+    color: #f1f5f9 !important;
+    font-weight: 600;
+}
+
+.chat-contact-preview {
+    color: #94a3b8 !important;
+}
+
+/* Söhbət seçilməyib yazısı və ikon rəngi */
+.chat-empty-state {
+    color: #64748b !important;
+}
+
+.chat-empty-state p {
+    color: #94a3b8 !important;
+}
+
+/* Axtarış inputu */
+.chat-search-input input {
+    color: #ffffff !important;
+}
+
+.chat-search-input input::placeholder {
+    color: #64748b !important;
+}
+
+/* Seçilmiş söhbət başlığı */
+.chat-main-header span, .chat-main-header h4 {
+    color: #ffffff !important;
+}
+
+.chat-modal-content {
+    background: #0f172a;
+    width: 420px;
+    height: 600px;
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Sidebar/Axtarış hissəsi */
+.chat-sidebar-header {
+    padding: 20px;
+    background: #1e293b;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.chat-search-input {
+    background: #0f172a !important;
+    border: 1px solid #334155 !important;
+    border-radius: 12px;
+}
+
+.chat-search-input input {
+    color: #ffffff !important;
+}
+
+/* Kontakt siyahısı */
+.chat-contact-item {
+    background: transparent;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    padding: 15px 20px;
+}
+
+.chat-contact-item.active {
+    background: rgba(45, 212, 191, 0.1) !important;
+}
+
+.chat-contact-name {
+    color: #ffffff !important;
+    font-size: 14px;
+}
+
+.chat-contact-preview {
+    color: #64748b !important;
+    font-size: 12px;
+}
+
+/* Mesaj sahəsi */
+.chat-main-body {
+    background: #0f172a !important;
+    padding: 20px;
+}
+
+.chat-bubble {
+    font-size: 14px;
+    padding: 12px 16px;
+    line-height: 1.4;
+}
+
+.me .chat-bubble {
+    background: #2dd4bf !important;
+    color: #000000 !important;
+    border-radius: 18px 18px 4px 18px;
+}
+
+.other .chat-bubble {
+    background: #1e293b !important;
+    color: #ffffff !important;
+    border-radius: 18px 18px 18px 4px;
+}
+
+/* Footer/Input */
+.chat-main-footer {
+    padding: 15px;
+    background: #1e293b;
+    gap: 10px;
+}
+
+.chat-main-footer input {
+    background: #0f172a !important;
+    border: 1px solid #334155 !important;
+    color: #ffffff !important;
+    border-radius: 12px;
+}
+
+/* Çat pəncərəsinin özü */
+.chat-modal-content {
+    background: #0f172a !important;
+    width: 380px;
+    height: 520px;
+    position: fixed;
+    bottom: 100px;
+    right: 30px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+    z-index: 3001;
+    overflow: hidden;
+}
+
+/* Çatın yuxarı hissəsi */
+.chat-main-header {
+    background: #1e293b !important;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #ffffff !important;
+}
+
+.chat-avatar-small {
+    width: 30px; height: 30px;
+    background: #2dd4bf;
+    border-radius: 8px;
+    color: #000;
+    font-weight: bold;
+    display: flex; align-items: center; justify-content: center;
+}
+
+/* Mesaj sahəsi */
+.chat-main-body {
+    flex: 1;
+    background: #0f172a !important;
+    padding: 15px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Mesaj balonları */
+.chat-bubble {
+    max-width: 75%;
+    padding: 10px 14px;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.me .chat-bubble {
+    background: #2dd4bf !important;
+    color: #000000 !important;
+    border-radius: 15px 15px 2px 15px;
+    align-self: flex-end;
+}
+
+.other .chat-bubble {
+    background: #1e293b !important;
+    color: #ffffff !important;
+    border-radius: 15px 15px 15px 2px;
+    align-self: flex-start;
+}
+
+/* Çatın aşağısı (Input sahəsi) */
+.chat-main-footer {
+    padding: 15px;
+    background: #1e293b !important;
+    display: flex;
+    gap: 10px;
+}
+
+.chat-main-footer input {
+    flex: 1;
+    background: #0f172a !important;
+    border: 1px solid #334155 !important;
+    color: #ffffff !important;
+    padding: 10px 15px;
+    border-radius: 10px;
+    outline: none;
+}
+
+.chat-main-footer button {
+    background: #2dd4bf !important;
+    color: #000 !important;
+    border-radius: 10px;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+}

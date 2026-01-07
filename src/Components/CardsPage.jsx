@@ -95,10 +95,10 @@ const CardsPage = () => {
                 <p className="spatial-subtitle">Bütün aktiv kartlarınız və balanslarınız.</p>
             </div>
             {/* Yeni Kart Əlavə Et Düyməsi (Opsional) */}
-            <button className="spatial-add-btn" onClick={() => document.getElementById('input-card-section').scrollIntoView({behavior:'smooth'})}>
+            {/* <button className="spatial-add-btn" onClick={() => document.getElementById('input-card-section').scrollIntoView({behavior:'smooth'})}>
                 <Plus size={20} />
                 <span>Yeni Kart</span>
-            </button>
+            </button> */}
         </div>
         
         {/* Grid */}

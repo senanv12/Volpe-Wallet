@@ -1,232 +1,120 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
-  Search, 
-  MessageCircle, 
-  ArrowRightLeft, // Transfer ikonu
-  LogOut, 
-  X, 
-  Bell, 
-  Globe, 
-  DollarSign, 
-  Menu 
+  LogOut, Globe, Banknote, DollarSign, TurkishLira, 
+  Euro, PoundSterling, Send, MessageSquare 
 } from 'lucide-react';
-
-// Context və API importları
-import { useChat } from '../Context/ChatContext'; 
 import { useData } from '../Context/DataContext'; 
 import { useSettings } from '../Context/SettingsContext'; 
-import api from '../api';
-
-// Modal
 import TransferModal from './TransferModal'; 
-
-// Assets & CSS
-import mainLogo from '../Assets/mainLogo.svg';
+import ChatModal from './ChatModal';
 import './css/Header.css';
 
 function Header() {
   const navigate = useNavigate();
-  const { startChat } = useChat(); 
-  const { user } = useData();
-  const { language, setLanguage, currency, setCurrency } = useSettings();
+  const { user, setUser } = useData();
+  const { language, setLanguage, currency, setCurrency } = useSettings(); 
 
-  // --- STATE-LƏR ---
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
-  const [showResults, setShowResults] = useState(false);
-  
-  // Transfer Modalı üçün State-lər
-  const [isTransferOpen, setIsTransferOpen] = useState(false);
-  const [transferTarget, setTransferTarget] = useState(null); // Seçilmiş istifadəçi
+  // Modallar üçün state-lər
+  const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
-  // Mobil Menyu State-i
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  // Valyuta və İkon konfiqurasiyası
+  const currencyConfigs = {
+    'AZN': { icon: <Banknote size={18} /> },
+    'TRY': { icon: <TurkishLira size={18} /> },
+    'USD': { icon: <DollarSign size={18} /> },
+    'GBP': { icon: <PoundSterling size={18} /> },
+    'EUR': { icon: <Euro size={18} /> },
+    'RUB': { icon: <Banknote size={18} /> }
+  };
 
-  const searchRef = useRef(null);
+  const currencyList = Object.keys(currencyConfigs);
 
-  // --- AXTARIŞ MƏNTİQİ (Debounce ilə) ---
-  useEffect(() => {
-    const delayDebounceFn = setTimeout(async () => {
-      if (searchQuery.length > 1) {
-        try {
-          // Backend-dən istifadəçi axtarışı
-          const { data } = await api.get(`/users/search?query=${searchQuery}`);
-          setSearchResults(data);
-          setShowResults(true);
-        } catch (error) {
-          console.error("Axtarış xətası:", error);
-        }
-      } else {
-        setSearchResults([]);
-        setShowResults(false);
-      }
-    }, 500); // 0.5 saniyə gözləyir
+  const handleCurrencyChange = () => {
+    const currentIndex = currencyList.indexOf(currency);
+    const nextIndex = (currentIndex + 1) % currencyList.length;
+    setCurrency(currencyList[nextIndex]);
+  };
 
-    return () => clearTimeout(delayDebounceFn);
-  }, [searchQuery]);
-
-  // Kənara klikləyəndə axtarışı bağla
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (searchRef.current && !searchRef.current.contains(event.target)) {
-        setShowResults(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  // --- ACTIONS ---
-  
-  const handleLogout = () => {
+  const handleLogout = (e) => {
+    e.stopPropagation();
     localStorage.removeItem('user');
-    window.location.href = '/login';
-  };
-
-  const toggleLanguage = () => {
-    const langs = ['AZ', 'EN', 'RU'];
-    const next = langs[(langs.indexOf(language) + 1) % langs.length];
-    setLanguage(next);
-  };
-
-  const toggleCurrency = () => {
-    const currs = ['AZN', 'USD', 'EUR', 'TRY'];
-    const next = currs[(currs.indexOf(currency) + 1) % currs.length];
-    setCurrency(next);
+    setUser(null);
+    navigate('/login');
   };
 
   return (
-    <>
-      <header className="header">
-        <div className="header-wrapper">
-          
-          {/* 1. LOGO */}
-          <div className="header-logo" onClick={() => navigate('/')}>
-            <img src={mainLogo} alt="Volpe Logo" width="40" />
-            <span className="logo-text">Volpe</span>
-          </div>
-
-          {/* 2. AXTARIŞ PANELİ */}
-          <div className="header-search-container" ref={searchRef}>
-            <div className="search-input-wrapper">
-              <Search className="search-icon" size={20} />
-              <input 
-                type="text" 
-                placeholder="İstifadəçi axtar..." 
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onFocus={() => searchQuery.length > 1 && setShowResults(true)}
-              />
-              {searchQuery && (
-                <X 
-                  className="clear-icon" 
-                  size={16} 
-                  onClick={() => { setSearchQuery(''); setSearchResults([]); }} 
-                />
-              )}
+    <header className="header">
+      <div className="header-wrapper">
+        
+        {/* Logo Bölməsi */}
+        <div className="header-logo" onClick={() => navigate('/dashboard')}>
+            <div className="volpe-logo-box">
+               <img src="/assets/icon.png" alt="Volpe Icon" className="volpe-brand-img" />
             </div>
+            <span className="volpe-logo-text">VOLPE</span>
+        </div>
 
-            {/* AXTARIŞ NƏTİCƏLƏRİ (Dropdown) */}
-            {showResults && searchResults.length > 0 && (
-              <div className="search-dropdown">
-                {searchResults.map(resUser => (
-                  <div key={resUser._id} className="search-result-item">
-                    
-                    {/* Sol tərəf: Profil və Chat üçün kliklənə bilər */}
-                    <div className="s-user-info" onClick={() => {
-                        startChat(resUser);
-                        setShowResults(false);
-                    }}>
-                        <div className="s-avatar">
-                          {resUser.avatar ? <img src={resUser.avatar} alt="avatar" /> : resUser.name[0]}
-                        </div>
-                        <div className="s-details">
-                          <span className="s-name">{resUser.name}</span>
-                          <span className="s-username">@{resUser.username}</span>
-                        </div>
-                    </div>
-
-                    {/* Sağ tərəf: TRANSFER DÜYMƏSİ */}
-                    {/* Bu düyməyə basanda Modalı açırıq və useri ötürürük */}
-                    <button 
-                        className="action-icon-btn transfer-btn"
-                        title="Pul köçür"
-                        onClick={(e) => {
-                            e.stopPropagation(); // Chat açılmasın
-                            setTransferTarget(resUser); // <--- Useri seçirik
-                            setIsTransferOpen(true);    // <--- Modalı açırıq
-                            setShowResults(false);      // <--- Axtarışı bağlayırıq
-                        }}
-                    >
-                        <ArrowRightLeft size={16} />
-                    </button>
-
-                  </div>
-                ))}
-              </div>
-            )}
+        {/* Sağ Tərəf: Aksiyalar (Axtarış bölməsi silindi) */}
+        <div className="header-actions">
             
-            {showResults && searchResults.length === 0 && searchQuery.length > 1 && (
-                 <div className="search-dropdown empty">
-                    İstifadəçi tapılmadı
-                 </div>
-            )}
-          </div>
+            {/* PUL GÖNDƏR DÜYMƏSİ */}
+            <button className="btn-send-money" onClick={() => setIsTransferModalOpen(true)}>
+               <Send size={18} /> 
+               <span className="hide-on-tablet">Pul Göndər</span>
+            </button>
 
-          {/* 3. SAĞ MENYU (Düymələr) */}
-          <div className="header-actions">
-             {/* Dil və Valyuta */}
-             <div className="settings-group desktop-only">
-                <button className="setting-btn" onClick={toggleLanguage}>
-                    <Globe size={18} />
-                    <span>{language}</span>
-                </button>
-                <button className="setting-btn" onClick={toggleCurrency}>
-                    <DollarSign size={18} />
-                    <span>{currency}</span>
-                </button>
-             </div>
+            {/* ÇAT DÜYMƏSİ */}
+            <button className="btn-glass" onClick={() => setIsChatOpen(true)} title="Mesajlar">
+               <MessageSquare size={18} />
+            </button>
 
-             <div className="divider-vertical desktop-only"></div>
+            {/* DİL SEÇİMİ */}
+            <button className="btn-glass" onClick={() => setLanguage(language === 'AZ' ? 'EN' : 'AZ')}>
+               <Globe size={18} /> <span>{language}</span>
+            </button>
+            
+            {/* VALYUTA SEÇİMİ */}
+            <button className="btn-glass" onClick={handleCurrencyChange}>
+               {currencyConfigs[currency]?.icon || <DollarSign size={18} />} 
+               <span>{currency}</span>
+            </button>
 
-             {user ? (
-               <>
-                 {/* Profil */}
-                 <div className="user-profile" onClick={() => navigate('/profile')}>
-                    <div className="user-avatar-small">
-                      {user.avatar ? <img src={user.avatar} alt="me" /> : user.name?.[0]}
-                    </div>
-                    <span className="user-name-text desktop-only">
-                        {user.name.split(' ')[0]}
-                    </span>
+            <div className="divider-vertical"></div>
+            
+            {/* İSTİFADƏÇİ PANELİ */}
+            {user ? (
+              <div className="header-user-area">
+                 <div className="user-profile-btn" onClick={() => navigate('/profile')}>
+                     <div className="user-avatar-small">
+                         {user.avatar ? <img src={user.avatar} alt="me" /> : (user.name ? user.name[0] : 'U')}
+                     </div>
+                     <span className="user-name-text hide-on-mobile">{user.name.split(' ')[0]}</span>
                  </div>
                  
-                 {/* Çıxış */}
-                 <button className="icon-btn logout-btn" onClick={handleLogout} title="Çıxış">
+                 <button className="logout-icon-btn" onClick={handleLogout} title="Çıxış">
                     <LogOut size={20} />
                  </button>
-               </>
-             ) : (
-               <button className="login-btn" onClick={() => navigate('/login')}>Daxil Ol</button>
-             )}
-
-             {/* Mobil Menyu İkonu */}
-             <button className="icon-btn mobile-menu-btn" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-                <Menu size={24} />
-             </button>
-          </div>
+              </div>
+            ) : (
+              <button className="login-btn" onClick={() => navigate('/login')}>Daxil Ol</button>
+            )}
         </div>
-      </header>
+      </div>
 
-      {/* --- TRANSFER MODALI --- */}
-      {/* Burada recipient prop-una seçilmiş useri göndəririk */}
+      {/* MODALLAR */}
       <TransferModal 
-        isOpen={isTransferOpen} 
-        onClose={() => setIsTransferOpen(false)} 
-        recipient={transferTarget}
+        isOpen={isTransferModalOpen} 
+        onClose={() => setIsTransferModalOpen(false)} 
       />
-    </>
+
+      <ChatModal 
+        isOpen={isChatOpen} 
+        onClose={() => setIsChatOpen(false)} 
+      />
+
+    </header>
   );
 }
 

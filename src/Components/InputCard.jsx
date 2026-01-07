@@ -16,12 +16,11 @@ const InputCard = () => {
   const [cardType, setCardType] = useState('default'); 
   const [isFlipped, setIsFlipped] = useState(false);
 
-  // Kart tipinə görə davranışlar
   useEffect(() => {
     if (cardType === 'leobank') {
-      setIsFlipped(true); // Leobank seçilən kimi arxasını çevir
+      setIsFlipped(true); 
     } else if (cardType === 'kapital') {
-      setIsFlipped(false); // Kapital dik duracaq (CSS ilə), amma üzü bizə baxsan
+      setIsFlipped(false); 
     }
   }, [cardType]);
 
@@ -30,7 +29,7 @@ const InputCard = () => {
     if (fieldName === 'cvv') {
       setIsFlipped(true);
     } else {
-      // Leobank həmişə arxa tərəfi göstərir (dizayn belədir)
+
       if (cardType === 'leobank') setIsFlipped(true);
       else setIsFlipped(false);
     }
@@ -87,7 +86,7 @@ const InputCard = () => {
         <h2 style={{textAlign: 'center', marginBottom: '40px'}}>Kartını Əlavə Et</h2>
         <div className="content-row">
           
-          {/* Kapital Bank olanda 'portrait-mode', digərlərində 'landscape-mode' */}
+     
           <div 
             className={`card-scene ${cardType === 'kapital' ? 'portrait-mode' : 'landscape-mode'}`} 
             onClick={() => setIsFlipped(!isFlipped)}

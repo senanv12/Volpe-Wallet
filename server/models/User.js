@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  username: { // YENİ: Axtarış üçün unikal ad
+  username: { 
     type: String,
     required: true,
     unique: true,
@@ -21,14 +21,14 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  walletBalance: { // YENİ: Daxili pulqabı balansı
+  walletBalance: { 
     type: Number,
-    default: 50.00 // Qeydiyyat bonusu kimi 50 AZN verək
+    default: 50.00 
   },
 
   avatar: {
     type: String,
-    default: "" // Boşdursa baş hərfini götürəcəyik
+    default: "" 
 },
   createdAt: {
     type: Date,
@@ -41,7 +41,7 @@ const userSchema = new mongoose.Schema({
 });
 
 
-// Şifrəni hash-ləmək
+
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
     next();
@@ -50,7 +50,7 @@ userSchema.pre('save', async function (next) {
   this.password = await bcrypt.hash(this.password, salt);
 });
 
-// Şifrəni yoxlamaq
+
 userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };

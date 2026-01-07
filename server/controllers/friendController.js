@@ -3,7 +3,7 @@ const FriendRequest = require('../models/FriendRequest');
 const Notification = require('../models/Notification');
 
 exports.sendFriendRequest = async (req, res) => {
-  // Frontend-dən gələn məlumatı dəqiqləşdiririk
+
   const { recipientId } = req.body;
   const senderId = req.user.id;
 
@@ -12,12 +12,12 @@ exports.sendFriendRequest = async (req, res) => {
   }
 
   try {
-    // 1. Özünə dostluq ata bilməz
+
     if (senderId === recipientId) {
         return res.status(400).json({ message: "Özünüzə dostluq ata bilməzsiniz" });
     }
 
-    // 2. Artıq sorğu varmı?
+
     const existing = await FriendRequest.findOne({ 
         sender: senderId, 
         recipient: recipientId, 
@@ -25,13 +25,13 @@ exports.sendFriendRequest = async (req, res) => {
     });
     if (existing) return res.status(400).json({ message: "Sorğu artıq göndərilib" });
 
-    // 3. YARATMA (Mongoose-a düzgün adla ötürürük: 'recipient')
+
     await FriendRequest.create({
       sender: senderId,
-      recipient: recipientId // <--- BURASI VACİBDİR
+      recipient: recipientId 
     });
 
-    // 4. Bildiriş
+
     await Notification.create({
       recipient: recipientId,
       sender: senderId,

@@ -13,31 +13,32 @@ import TransactionsPage from '../Components/TransactionsPage';
 import CalculatorPage from '../Components/CalculatorPage';
 import VolpeCard from '../Components/VolpeCard';
 import InputCard from '../Components/InputCard';
+import Footer from '../Components/Footer';
 const MainPage = () => {
   const { t, convertAmount, currentSymbol } = useSettings();
   const { user, cards } = useData();
   const navigate = useNavigate();
 
-  // --- BALANS HESABLAMASI (Cari Balans və VolpeKart üçün eyni məntiq) ---
+
   const totalCardsBalanceDisplay = useMemo(() => {
-    // Yalnız daxil edilmiş kartların balansını toplayırıq
+
     const totalAZN = Array.isArray(cards) 
       ? cards.reduce((sum, card) => sum + (parseFloat(card.balance) || 0), 0)
       : 0;
     
-    // Seçilmiş valyutaya çevirib formatlayırıq
+    
     return convertAmount(totalAZN).toFixed(2);
   }, [cards, convertAmount]);
 
   return (
     <>
-      {/* --- ƏSAS HERO BÖLMƏSİ --- */}
+  
       <main className="main-container">
         
-        {/* SOL TƏRƏF (Mətn və Statistika) */}
+     
         <div className="main-content">
            {!user ? (
-             /* QONAQ (GUEST) GÖRÜNÜŞÜ */
+            
              <>
                <div className="badge">✨ {t('hero_badge')}</div>
                <h1 className="hero-title">
@@ -57,11 +58,11 @@ const MainPage = () => {
                </div>
              </>
            ) : (
-             /* İSTİFADƏÇİ (USER) GÖRÜNÜŞÜ */
+            
              <>
                <div className="badge user-badge">👋 {t('welcome')}</div>
                <h1 className="hero-title">
-  {/* Əgər t('greeting_hello') hələ yüklənməyibsə, birbaşa 'Salam' yazsın */}
+
   {t('greeting_hello') === 'greeting_hello' ? 'Salam' : t('greeting_hello')}, {user.name.split(' ')[0]}! <br />
   
   <span className="highlight-text">
@@ -70,7 +71,7 @@ const MainPage = () => {
 </h1>
                <p className="hero-subtitle">{t('balance_desc')}</p>
                
-               {/* Statistika Qutusu (VolpeKart ilə Sinxron) */}
+        
                <div className="hero-stats">
                   <div className="stat-item">
                       <h3 style={{fontSize:'24px'}}>
@@ -88,29 +89,29 @@ const MainPage = () => {
            )}
         </div>
 
-        {/* SAĞ TƏRƏF (VolpeCard Vizualı) */}
+
         <div className="hero-visual-section">
             <div className="hero-card-container">
                 <VolpeCard 
                     color={user ? "orange" : "blue"} 
                 />
             </div>
-            {/* Dekorativ Arxa Fon İşığı */}
+    
             <div className="hero-glow"></div>
         </div>
         
       </main>
       
-      {/* --- AŞAĞI BÖLMƏLƏR --- */}
+
       
-      {/* Əgər Qonaqdırsa -> Reklam Karuseli */}
+
       {!user && (
         <div id="features-section">
             <FeaturesSection />
         </div>
       )}
 
-      {/* Əgər İstifadəçidirsə -> Funksional Panellər */}
+
       {user && (
         <div className="user-dashboard-sections">
           <div id="input-card-section" style={{padding: '40px 0'}}></div>
@@ -118,6 +119,7 @@ const MainPage = () => {
             <TransactionsPage />
             <CalculatorPage />
             <InputCard />
+            <Footer />
             
         </div>
       )}

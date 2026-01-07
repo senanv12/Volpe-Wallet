@@ -2,12 +2,12 @@ const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
-// Token Yaratmaq
+
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
 };
 
-// 1. QEYDİYYAT
+
 exports.registerUser = async (req, res) => {
   const { fullName, email, password, username } = req.body;
   try {
@@ -18,18 +18,18 @@ exports.registerUser = async (req, res) => {
     const userExists = await User.findOne({ email });
     if (userExists) return res.status(400).json({ message: 'Bu e-poçt artıq qeydiyyatdan keçib' });
 
-    // Username yoxdursa, email-in əvvəlini götür
+
     const finalUsername = username || email.split('@')[0];
     const usernameExists = await User.findOne({ username: finalUsername });
     if (usernameExists) return res.status(400).json({ message: 'Bu istifadəçi adı artıq tutulub' });
 
-    // DÜZƏLİŞ: Şifrəni burada hash-ləmirik! User.js modelində pre('save') bunu edəcək.
+ 
     const user = await User.create({
       name: fullName,
       email,
       username: finalUsername,
-      password: password, // Xam şifrə göndərilir
-      walletBalance: 100 // Bonus
+      password: password, 
+      walletBalance: 100 
     });
 
     if (user) {
@@ -47,13 +47,13 @@ exports.registerUser = async (req, res) => {
   }
 };
 
-// 2. GİRİŞ (Dəyişməz qalır, amma yuxarıdakı düzəliş sayəsində işləyəcək)
+
 exports.loginUser = async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email });
 
-    if (user && (await user.matchPassword(password))) { // Model metodundan istifadə edirik
+    if (user && (await user.matchPassword(password))) { 
       res.json({
         _id: user.id,
         name: user.name,
@@ -71,7 +71,7 @@ exports.loginUser = async (req, res) => {
   }
 };
 
-// 3. AXTARIŞ
+
 exports.searchUsers = async (req, res) => {
   const keyword = req.query.query
     ? {
@@ -92,7 +92,7 @@ exports.searchUsers = async (req, res) => {
   }
 };
 
-// 4. PROFİL YENİLƏMƏ
+
 exports.updateProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
