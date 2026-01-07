@@ -259,6 +259,91 @@
             color: var(--text-muted);
             font-size: 0.9rem;
         }
+        /* --- RESPONSIVLIK (Media Queries) --- */
+
+/* Planşetlər üçün (Max-width: 1024px) */
+@media (max-width: 1024px) {
+    h1 {
+        font-size: 3.5rem;
+    }
+    .card-wrapper {
+        width: 400px;
+        height: 250px;
+    }
+    .volpe-cards-section h2 {
+        font-size: 2.8rem;
+    }
+}
+
+/* Mobil Cihazlar üçün (Max-width: 768px) */
+@media (max-width: 768px) {
+    nav {
+        width: 90%;
+        padding: 8px 15px;
+        gap: 10px;
+    }
+    .nav-links {
+        display: none; /* Mobildə sadəlik üçün linkləri gizlədirik */
+    }
+    .nav-logo span {
+        font-size: 16px !important;
+    }
+
+    h1 {
+        font-size: 2.5rem;
+        padding: 0 20px;
+    }
+    .subtitle {
+        font-size: 1rem;
+        padding: 0 20px;
+    }
+
+    .card-wrapper {
+        width: 280px; /* Kartı kiçildirik */
+        height: 180px;
+        top: 75%;
+    }
+    .bank-card {
+        padding: 15px;
+    }
+    .chip {
+        width: 35px;
+        height: 28px;
+    }
+
+    .volpe-cards-section {
+        padding-top: 10vh;
+        margin-top: -5vh;
+    }
+    .volpe-cards-section h2 {
+        font-size: 2rem;
+    }
+
+    /* Üzən kartları mobildə kiçildirik və mövqelərini tənzimləyirik */
+    .float-card {
+        width: 100px !important;
+    }
+    .fc-1 { left: 2%; top: 10%; }
+    .fc-3 { left: 5%; bottom: 15%; }
+    .fc-4 { right: 2%; top: 15%; }
+    .fc-6 { right: 5%; bottom: 10%; }
+    .fc-2, .fc-5 { display: none; } /* Çox qarmaqarışıq olmaması üçün bəzilərini gizlətmək olar */
+}
+
+/* Çox kiçik ekranlar üçün (Max-width: 480px) */
+@media (max-width: 480px) {
+    h1 {
+        font-size: 2rem;
+    }
+    .card-wrapper {
+        width: 240px;
+        height: 150px;
+    }
+    .green-btn {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+}
 
     </style>
 </head>
