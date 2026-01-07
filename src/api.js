@@ -4,8 +4,12 @@ import axios from 'axios';
 const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 const api = axios.create({
+// <<<<<<< HEAD
   // DÜZƏLİŞ: Sonda '/users' SİLDİK. Artıq sadəcə '/api' olacaq.
   baseURL: `${baseURL}/api`, 
+// =======
+  baseURL: `${import.meta.env.VITE_API_URL}/api/users`, // Backend ünvanı
+// >>>>>>> 80e1b45fd6db1969ff1b584867a6418e3e8ce138
   headers: {
     'Content-Type': 'application/json',
   },
