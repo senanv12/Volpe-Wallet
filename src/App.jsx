@@ -3,7 +3,7 @@ import Header from './Components/Header';
 import MainPage from './Pages/mainPage';
 import AuthPage from './Components/AuthPage';
 import ProfilePage from './Pages/ProfilePage';
-import ChatWidget from './Components/ChatWidget';
+// import ChatWidget from './Components/ChatWidget';
 import { useData } from './Context/DataContext';
 
 function App() {
@@ -27,7 +27,7 @@ function App() {
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
 
-      {user && !isAuthPage && <ChatWidget />}
+      {user && !isAuthPage}
     </>
   );
 }

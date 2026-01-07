@@ -1,102 +1,96 @@
 import React, { useState, useEffect } from 'react';
-import { X, Send, CreditCard, User, CheckCircle } from 'lucide-react';
+import { X, Send, CreditCard, User, CheckCircle, ChevronDown } from 'lucide-react';
 import api from '../api';
 import { useData } from '../Context/DataContext';
 import { useSettings } from '../Context/SettingsContext';
 import './css/TransferModal.css';
 
 const TransferModal = ({ isOpen, onClose, recipient }) => {
-
-  const data = useData();
-  const settings = useSettings();
-
-
-  if (!data || !settings) return null;
-
-  const { cards, refreshData } = data;
-  const { currentSymbol } = settings;
-
-  const safeCards = Array.isArray(cards) ? cards : [];
+  const { cards, refreshData } = useData() || {};
+  const { currency: globalCurrency } = useSettings() || {};
 
   const [username, setUsername] = useState('');
   const [amount, setAmount] = useState('');
+  const [selectedCurrency, setSelectedCurrency] = useState('AZN');
   const [selectedCards, setSelectedCards] = useState({});
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState({ type: '', text: '' });
 
+  const currencies = ['AZN', 'TRY', 'USD', 'GBP', 'EUR', 'RUB'];
 
   useEffect(() => {
     if (isOpen) {
-
-      if (recipient && recipient.username) {
-        setUsername(recipient.username);
-      } else {
-        setUsername('');
-      }
+      setSelectedCurrency(globalCurrency || 'AZN');
+      setUsername(recipient?.username || ''); // Əgər profildən gəlibsə avtomatik yazılır
       setAmount('');
       setSelectedCards({});
       setMsg({ type: '', text: '' });
     }
-  }, [isOpen, recipient]);
-
+  }, [isOpen, recipient, globalCurrency]);
 
   const toggleCard = (cardId) => {
     setSelectedCards(prev => ({ ...prev, [cardId]: !prev[cardId] }));
   };
 
-
+  // Balans paylanmasını hesablamaq
   const calculateDistribution = () => {
     const target = Number(amount);
-    if (!target || target <= 0) return { valid: false, sources: [], missing: 0 };
-
+    if (!target || target <= 0) return { valid: false, sources: [], missing: target };
+    
     let remaining = target;
     const sources = [];
-    
-
+    const safeCards = Array.isArray(cards) ? cards : [];
     const mySelectedCards = safeCards.filter(c => selectedCards[c._id]);
 
     for (const card of mySelectedCards) {
-        if (remaining <= 0) break;
-        const available = Number(card.balance || 0); 
-        const take = Math.min(available, remaining);
-        
-        if (take > 0) {
-            sources.push({ cardId: card._id, deductAmount: take });
-            remaining -= take;
-        }
+      if (remaining <= 0) break;
+      const available = Number(card.balance || 0);
+      const take = Math.min(available, remaining);
+      if (take > 0) {
+        sources.push({ cardId: card._id, deductAmount: take });
+        remaining -= take;
+      }
     }
-
-    return {
-        valid: remaining <= 0.01,
-        sources: sources,
-        missing: remaining
-    };
+    // Əgər qalıq 0-dırsa, deməli kartlardakı balans kifayət edir
+    return { valid: remaining <= 0, sources, missing: remaining };
   };
 
   const { valid, sources, missing } = calculateDistribution();
 
-  const handleTransfer = async (e) => {
-    e.preventDefault();
-    if (!valid) return;
+const handleTransfer = async (e) => {
+  e.preventDefault();
+  
+  // Şablon yoxlanışı: Sadəcə inputun boş olub-olmadığına baxırıq
+  if (!username.trim() || !amount || amount <= 0) {
+    setMsg({ type: 'error', text: 'Zəhmət olmasa bütün sahələri düzgün doldurun.' });
+    return;
+  }
 
-    setLoading(true);
-    try {
-      await api.post('/transactions/transfer', {
-        receiverUsername: username,
-        amount: Number(amount),
-        sources: sources
-      });
+  setLoading(true);
+  try {
+    // API-ya sorğu: Backend burada "sources" massivini götürüb kart balanslarını azaldacaq
+    await api.post('/transactions/transfer', {
+      receiverUsername: username, // Nə yazılsa qəbul edilir
+      amount: Number(amount),
+      currency: selectedCurrency,
+      sources: sources, // Seçdiyin çoxlu kartlar və hərəsindən çıxılacaq məbləğ
+      isTemplate: true  // Backend-ə bu transferin "sərbəst" olduğunu bildirmək üçün
+    });
 
-      setMsg({ type: 'success', text: 'Transfer uğurla tamamlandı!' });
-      await refreshData();
-      setTimeout(onClose, 2000);
-    } catch (error) {
-      setMsg({ type: 'error', text: error.response?.data?.message || 'Xəta baş verdi.' });
-    } finally {
-      setLoading(false);
-    }
-  };
-
+    setMsg({ type: 'success', text: 'Uğurlu əməliyyat! Balansınızdan pul çıxıldı.' });
+    
+    // Header və Dashboard-da balansın dərhal yenilənməsi üçün refresh çağırılır
+    if (refreshData) await refreshData();
+    
+    // 2 saniyə sonra modalı bağla
+    setTimeout(onClose, 2000);
+  } catch (error) {
+    // Əgər balans çatmasa və ya serverdə xəta olsa bura düşəcək
+    setMsg({ type: 'error', text: error.response?.data?.message || 'Balans azaldılarkən xəta baş verdi.' });
+  } finally {
+    setLoading(false);
+  }
+};
 
   if (!isOpen) return null;
 
@@ -104,77 +98,72 @@ const TransferModal = ({ isOpen, onClose, recipient }) => {
     <div className="modal-overlay">
       <div className="modal-content glass-effect">
         <div className="modal-header">
-    
-          <h3>
-             {recipient?.name ? `Transfer: ${recipient.name}` : 'Kartla Transfer'}
-          </h3>
+          <h3>Pul Göndər</h3>
           <button onClick={onClose} className="close-btn"><X size={24} /></button>
         </div>
 
         <form onSubmit={handleTransfer} className="modal-body">
-
+          {/* Username hissəsi */}
           <div className="input-group">
-            <label>Qəbul edən (@username)</label>
+            <label>Alıcının Username-i</label>
             <div className="input-wrapper">
               <User className="input-icon" size={18} />
               <input 
                 type="text" 
-                placeholder="@dostun" 
+                placeholder="@username" 
                 value={username} 
-                onChange={e => setUsername(e.target.value)} 
-
+                onChange={e => setUsername(e.target.value)}
+                required
               />
             </div>
           </div>
 
           <div className="input-group">
-            <label>Məbləğ ({currentSymbol})</label>
-            <div className="input-wrapper">
-              <span className="currency-icon">{currentSymbol}</span>
-              <input 
-                type="number" placeholder="0.00" 
-                value={amount} onChange={e => setAmount(e.target.value)} 
-              />
+            <label>Valyuta və Məbləğ</label>
+            <div className="amount-row">
+                <select 
+                    value={selectedCurrency} 
+                    onChange={(e) => setSelectedCurrency(e.target.value)}
+                    className="currency-dropdown"
+                >
+                    {currencies.map(c => <option key={c} value={c}>{c}</option>)}
+                </select>
+                <div className="input-wrapper flex-1">
+                    <input 
+                        type="number" 
+                        value={amount} 
+                        onChange={e => setAmount(e.target.value)} 
+                        placeholder="0.00" 
+                        required
+                    />
+                </div>
             </div>
           </div>
 
-
           <div className="cards-selection-area">
-            <p className="selection-title">Ödəniş mənbələrini seçin:</p>
-            
+            <p className="selection-title">Ödəniş üçün kartlarınızı seçin:</p>
             <div className="cards-scroll-list">
-                {safeCards.length > 0 ? (
-                    safeCards.map(card => {
-                        const isSelected = !!selectedCards[card._id];
-                        const sourceInfo = sources.find(s => s.cardId === card._id);
-                        const deducted = sourceInfo ? sourceInfo.deductAmount : 0;
-
-                        return (
-                            <div key={card._id} className={`card-select-row ${isSelected ? 'active' : ''}`} onClick={() => toggleCard(card._id)}>
-                                <div className="card-row-left">
-                                    <CreditCard size={20} color={isSelected ? '#2dd4bf' : '#64748b'} />
-                                    <div>
-                                        <div className="card-name">{card.bankName} •••• {card.cardNumber.slice(-4)}</div>
-                                        <div className="card-bal">Balans: {Number(card.balance).toFixed(2)} {currentSymbol}</div>
-                                    </div>
-                                </div>
-                                {deducted > 0 && <div className="deduct-badge">-{deducted} {currentSymbol}</div>}
-                                {isSelected && <CheckCircle size={18} color="#2dd4bf" style={{marginLeft:'auto'}} />}
-                            </div>
-                        );
-                    })
-                ) : (
-                    <div className="no-cards-text">Kart tapılmadı. Zəhmət olmasa kart əlavə edin.</div>
-                )}
+              {cards?.map(card => (
+                <div 
+                    key={card._id} 
+                    className={`card-select-row ${selectedCards[card._id] ? 'active' : ''}`} 
+                    onClick={() => toggleCard(card._id)}
+                >
+                  <div className="card-row-left">
+                    <CreditCard size={20} />
+                    <div className="card-info">
+                      <span className="card-name">{card.bankName} (**** {card.cardNumber?.slice(-4)})</span>
+                      <span className="card-bal">{Number(card.balance).toFixed(2)} {selectedCurrency}</span>
+                    </div>
+                  </div>
+                  {selectedCards[card._id] && <CheckCircle size={18} color="#2dd4bf" />}
+                </div>
+              ))}
             </div>
-
-  
-            {amount > 0 && safeCards.length > 0 && (
-                <div className={`status-indicator ${valid ? 'success' : 'warning'}`}>
-                    {valid 
-                        ? <span>✅ Məbləğ tamamlandı! Göndərə bilərsiniz.</span>
-                        : <span>❌ Hələ <b>{missing.toFixed(2)} {currentSymbol}</b> çatmır.</span>
-                    }
+            
+            {amount > 0 && (
+                <div className={`status-info ${valid ? 'ready' : 'not-enough'}`}>
+                    {valid ? "✅ Balans kifayətdir" : `❌ Çatışmayan: ${missing.toFixed(2)} ${selectedCurrency}`}
                 </div>
             )}
           </div>
@@ -182,7 +171,7 @@ const TransferModal = ({ isOpen, onClose, recipient }) => {
           {msg.text && <div className={`message-box ${msg.type}`}>{msg.text}</div>}
 
           <button type="submit" className="submit-btn" disabled={loading || !valid || !username}>
-            {loading ? 'Göndərilir...' : 'Göndər'} <Send size={18} />
+            {loading ? 'İşlənilir...' : 'Transferi Təsdiqlə'} <Send size={18} />
           </button>
         </form>
       </div>

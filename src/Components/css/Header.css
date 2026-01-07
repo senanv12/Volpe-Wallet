@@ -1,430 +1,262 @@
-/* --- Header.css --- */
-
+/* --- Header Ümumi --- */
 .header {
-  background-color: rgba(13, 17, 23, 0.85);
-  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-  padding: 12px 0;
-  color: #fff; font-family: 'Inter', sans-serif;
-  position: sticky; top: 0; z-index: 1000;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: #0d1117;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0 20px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
 .header-wrapper {
-  max-width: 1200px; margin: 0 auto;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 24px; gap: 20px;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-/* 1. YENİ LOGO STİLİ */
+/* --- Logo --- */
 .header-logo {
-  display: flex; align-items: center; gap: 8px;
-  cursor: pointer; user-select: none;
-}
-.volpe-logo-icon {
-    width: 32px; height: 32px;
-    background: linear-gradient(135deg, #2dd4bf, #0f766e);
-    color: #fff; font-weight: 800; font-size: 18px;
-    display: flex; align-items: center; justify-content: center;
-    border-radius: 8px; box-shadow: 0 0 10px rgba(45, 212, 191, 0.3);
-}
-.volpe-logo-text {
-    font-size: 22px; font-weight: 700; letter-spacing: -0.5px;
-    background: linear-gradient(to right, #ffffff, #94a3b8);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
 }
 
-/* 2. SEARCH BAR */
-.header-search { flex: 1; max-width: 450px; position: relative; }
-
-.search-input-wrapper {
-    display: flex; align-items: center;
-    background: rgba(255, 255, 255, 0.07);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 10px; padding: 8px 12px; transition: 0.3s;
-}
-.search-input-wrapper:focus-within {
-    border-color: #2dd4bf; background: rgba(0, 0, 0, 0.4);
-    box-shadow: 0 0 0 2px rgba(45, 212, 191, 0.15);
-}
-.search-icon { color: #64748b; margin-right: 10px; }
-.header-search input {
-    width: 100%; background: transparent; border: none; outline: none;
-    color: #fff; font-size: 14px;
-}
-.header-search input::placeholder { color: #64748b; }
-.clear-search { color: #64748b; cursor: pointer; transition: 0.2s; }
-.clear-search:hover { color: #fff; }
-
-/* Search Dropdown */
-.search-dropdown {
-    position: absolute; top: 110%; left: 0; right: 0;
-    background: #161b22; border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    overflow: hidden; z-index: 1100; padding: 5px;
-}
-.search-result-item {
-    display: flex; align-items: center; gap: 12px; padding: 10px;
-    border-radius: 8px; cursor: pointer; transition: background 0.2s;
-}
-.search-result-item:hover { background: rgba(45, 212, 191, 0.1); }
-.s-avatar {
-    width: 32px; height: 32px; border-radius: 50%;
-    background: #334155; display: flex; align-items: center; justify-content: center;
-    overflow: hidden; color: #fff; font-weight: bold; font-size: 14px;
-}
-.s-avatar img { width: 100%; height: 100%; object-fit: cover; }
-.s-info { flex: 1; display: flex; flex-direction: column; }
-.s-name { font-size: 14px; font-weight: 600; color: #e2e8f0; }
-.s-username { font-size: 12px; color: #94a3b8; }
-.s-arrow { color: #2dd4bf; opacity: 0; transition: 0.2s; }
-.search-result-item:hover .s-arrow { opacity: 1; transform: translateX(3px); }
-
-/* 3. HEADER ACTIONS & NEW BUTTONS */
-.header-actions { display: flex; align-items: center; gap: 12px; }
-
-/* Yeni Glass Düymələr (Dil və Valyuta) */
-.btn-glass {
-    display: flex; align-items: center; gap: 6px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 20px; padding: 6px 12px;
-    color: #cbd5e1; cursor: pointer; transition: all 0.2s ease;
-}
-.btn-glass:hover {
-    background: rgba(45, 212, 191, 0.1);
-    border-color: rgba(45, 212, 191, 0.3);
-    color: #2dd4bf; transform: translateY(-1px);
-}
-.btn-icon { opacity: 0.8; }
-.btn-text { font-size: 13px; font-weight: 600; }
-
-.divider-vertical {
-    width: 1px; height: 24px; background: rgba(255,255,255,0.1); margin: 0 5px;
-}
-
-/* Profil Düyməsi */
-.user-profile-btn {
-    display: flex; align-items: center; gap: 10px;
-    background: rgba(255,255,255,0.05); padding: 5px 12px 5px 5px;
-    border-radius: 30px; cursor: pointer; border: 1px solid transparent; transition: 0.3s;
-}
-.user-profile-btn:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.1); }
-.user-avatar-small {
-    width: 32px; height: 32px; border-radius: 50%;
-    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-    display: flex; align-items: center; justify-content: center;
-    color: #fff; font-weight: bold; font-size: 14px; overflow: hidden;
-}
-.user-avatar-small img { width: 100%; height: 100%; object-fit: cover; }
-.user-name-text { font-size: 14px; font-weight: 500; color: #fff; }
-
-.icon-btn {
-    background: transparent; border: none; color: #94a3b8;
-    cursor: pointer; padding: 8px; border-radius: 50%;
-    transition: 0.3s; display: flex; align-items: center; justify-content: center;
-}
-.icon-btn:hover { color: #ef4444; background: rgba(239, 68, 68, 0.1); }
-.login-btn {
-    background: #2dd4bf; color: #0f172a; border: none; padding: 8px 16px;
-    border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s;
-}
-.login-btn:hover { opacity: 0.9; transform: translateY(-1px); }
-
-.animate-fade-in { animation: fadeIn 0.2s ease-out; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
-
-/* RESPONSIVE */
-@media (max-width: 768px) {
-    .volpe-logo-text, .user-name-text, .btn-text { display: none; } /* Mobildə yazıları gizlət */
-    .header-wrapper { padding: 0 15px; gap: 10px; }
-    .header-search { display: none; } /* Mobildə axtarışı gizlədə bilərik və ya kiçildə bilərik */
-    .btn-glass { padding: 8px; border-radius: 50%; } /* Mobildə yumru olsun */
-}
-/* --- Header.css --- */
-
-/* ... (Köhnə kodların əksəriyyəti qalır) ... */
-.header {
-  background-color: rgba(13, 17, 23, 0.85);
-  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-  padding: 12px 0;
-  color: #fff; font-family: 'Inter', sans-serif;
-  position: sticky; top: 0; z-index: 1000;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.header-wrapper {
-  max-width: 1200px; margin: 0 auto;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 24px; gap: 20px;
-  position: relative; /* Mobil search üçün vacib */
-}
-
-/* Logo və digər stillər olduğu kimi qalır... */
-/* ... */
-
-/* Search Bar (Desktop) */
-.header-search { flex: 1; max-width: 450px; position: relative; }
-
-/* Mobil Search Trigger (Default olaraq gizli) */
-.mobile-search-trigger {
-    display: none; /* Desktopda görünməsin */
-    background: transparent; border: none; color: #fff;
-    cursor: pointer; padding: 8px;
-}
-
-/* Search Input Wrapper */
-.search-input-wrapper {
-    display: flex; align-items: center;
-    background: rgba(255, 255, 255, 0.07);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 10px; padding: 8px 12px; transition: 0.3s;
-}
-
-/* ... Digər search stilləri ... */
-
-/* =========================================
-   MOBİL RESPONSİVLİK VƏ AXTARIŞ MƏNTİQİ
-   ========================================= */
-
-@media (max-width: 768px) {
-    /* 1. Header elementlərini sıxlaşdır */
-    .header-wrapper { padding: 0 15px; gap: 10px; }
-    
-    /* 2. Yazıları gizlət (yer qazanc) */
-    .volpe-logo-text, .user-name-text, .btn-text { display: none; }
-    
-    /* 3. Axtarış sahəsini (INPUT) gizlət */
-    .header-search {
-        display: none; /* Default olaraq gizlidir */
-    }
-
-    /* 4. Axtarış İKONUNU göstər */
-    .mobile-search-trigger {
-        display: block;
-    }
-
-    /* 5. Axtarış aktiv olanda (.mobile-active) */
-    .header-search.mobile-active {
-        display: block;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        padding: 0 15px;
-        background: #0d1117; /* Header rəngi ilə eyni */
-        z-index: 20;
-        display: flex;
-        align-items: center;
-    }
-    
-    .header-search.mobile-active .search-input-wrapper {
-        width: 100%;
-        height: 40px;
-    }
-
-    /* 6. Aktiv olanda digər elementləri gizlət */
-    .hide-on-mobile {
-        display: none !important;
-    }
-
-    /* Düymələr yumru olsun */
-    .btn-glass { padding: 8px; border-radius: 50%; }
-}
-
-/* Logo Şəkli üçün */
-.volpe-brand-img {
-    width: 35px;
+.volpe-logo-box img {
     height: 35px;
-    object-fit: contain;
-}
-
-.volpe-logo-text {
-    font-size: 20px;
-    font-weight: 600;
-    letter-spacing: 2px;
-    color: #FF5722; /* Şəkildəki narıncı rəng tonu */
-}
-
-/* Mobil Axtarış İkonu Dizaynı */
-.mobile-search-trigger {
-    display: none;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    color: #2dd4bf;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-@media (max-width: 767px) {
-    .mobile-search-trigger {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-}
-
-/* Logo dizaynı */
-.volpe-brand-img {
-    width: 32px;
-    height: 32px;
-    object-fit: contain;
+    width: auto;
 }
 
 .volpe-logo-text {
     font-size: 20px;
     font-weight: 800;
-    color: #FF5722; /* Narıncı tonu */
+    color: #fff;
     letter-spacing: 1px;
 }
 
-/* Mobildə axtarış barını gizlədib ikon etmək */
-@media (max-width: 767px) {
-    .header-search {
-        display: none; /* Desktop barını gizlət */
-    }
-
-    .header-search.mobile-active {
-        display: flex; /* İkona basanda açılan bar */
-        position: absolute;
-        width: 100%;
-        left: 0;
-        background: #0d1117;
-        padding: 10px;
-        z-index: 100;
-    }
-
-    .mobile-search-trigger {
-        display: block; /* Böyüdücü ikonu göstər */
-        color: #2dd4bf;
-    }
-}
-
-/* ... mövcut stillər ... */
-
-.header-user-area {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-/* Profil düyməsi (Sol tərəf) */
-.user-profile-btn {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: rgba(255, 255, 255, 0.05);
-    padding: 5px 12px 5px 5px;
-    border-radius: 30px;
-    cursor: pointer;
-    transition: 0.3s;
-    border: 1px solid transparent;
-}
-
-.user-profile-btn:hover {
-    background: rgba(45, 212, 191, 0.1);
-    border-color: rgba(45, 212, 191, 0.2);
-}
-
-/* Çıxış düyməsi (Sağ tərəf - Ayrılmış) */
-.logout-icon-btn {
-    background: rgba(239, 68, 68, 0.1);
-    border: none;
-    color: #f87171;
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.logout-icon-btn:hover {
-    background: #ef4444;
-    color: white;
-    transform: scale(1.05);
-}
-
-/* Logo üçün broken image düzəlişi */
-.volpe-brand-img {
-    width: 32px;
-    height: 32px;
-    object-fit: contain;
-}
-
-.volpe-logo-box {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    /* background: #fff; Əgər şəkil şəffafdırsa fon veririk */
-    border-radius: 8px;
-    padding: 2px;
-}
-
-/* Mobildə gizlətmə klassı */
-@media (max-width: 767px) {
-    .hide-on-mobile {
-        display: none !important;
-    }
-}
-
-/* Logo Dizaynı */
-.volpe-brand-img {
-    width: 32px;
-    height: 32px;
-    object-fit: contain;
-}
-
-.volpe-logo-text {
-    font-size: 18px;
-    font-weight: 800;
-    color: #FF5722; /* Tülkü narıncısı */
-    letter-spacing: 1px;
-}
-
-/* İstifadəçi Sahəsi */
-.header-user-area {
+/* --- Aksiyalar (Sağ tərəf) --- */
+.header-actions {
     display: flex;
     align-items: center;
     gap: 12px;
 }
 
-.user-profile-btn {
+/* Pul Göndər Düyməsi */
+.btn-send-money {
     display: flex;
     align-items: center;
     gap: 8px;
-    background: rgba(255, 255, 255, 0.05);
-    padding: 4px 12px 4px 4px;
-    border-radius: 20px;
+    background: #2dd4bf;
+    color: #000;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-weight: 600;
     cursor: pointer;
     transition: 0.3s;
 }
 
-.user-profile-btn:hover {
-    background: rgba(45, 212, 191, 0.1);
+.btn-send-money:hover {
+    background: #14b8a6;
+    transform: translateY(-2px);
+}
+
+/* Glass Buttonlar (Dil və Valyuta) */
+.btn-glass {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.btn-glass:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.divider-vertical {
+    width: 1px;
+    height: 24px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 0 8px;
+}
+
+/* --- İstifadəçi Bölməsi --- */
+.header-user-area {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-profile-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.user-avatar-small {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #2dd4bf;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000;
+    font-weight: bold;
+    overflow: hidden;
+}
+
+.user-avatar-small img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.user-name-text {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
 }
 
 .logout-icon-btn {
-    background: rgba(239, 68, 68, 0.1);
+    background: none;
     border: none;
-    color: #f87171;
-    width: 35px;
-    height: 35px;
+    color: #ff4d4d;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: 0.2s;
+}
+
+.logout-icon-btn:hover {
+    transform: scale(1.1);
+}
+
+/* --- Transfer Modal Ümumi (Əgər ayrı faylda deyilsə) --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+/* Responsivlik */
+@media (max-width: 768px) {
+    .hide-on-mobile { display: none; }
+    .header-logo span { display: none; }
+    .btn-send-money span { display: none; }
+}
+/* LogOut Düyməsinin Ümumi Konteyneri */
+.header-user-area {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-left: 10px;
+}
+
+/* Çıxış Düyməsi Stili */
+.logout-icon-btn {
+    background: rgba(255, 77, 77, 0.1); /* Çox açıq qırmızı fon */
+    border: 1px solid rgba(255, 77, 77, 0.2);
+    color: #ff4d4d; /* Parlaq qırmızı ikon rəngi */
+    padding: 8px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+/* Üstünə gələndə (Hover) effekti */
+.logout-icon-btn:hover {
+    background: #ff4d4d; /* Fon tam qırmızı olur */
+    color: #ffffff;    /* İkon ağ rəngə çevrilir */
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(255, 77, 77, 0.3);
+}
+
+/* İkonun ölçüsü və hizalanması */
+.logout-icon-btn svg {
+    display: block;
+}
+
+/* İstifadəçi adı və avatarı üçün profil düyməsi (əgər o da pozulubsa) */
+.user-profile-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.user-profile-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+.talkjs-launcher {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    background: #2dd4bf; /* Brend yaşılı */
+    color: #000;
     border-radius: 50%;
+    border: none;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: 0.3s;
+    box-shadow: 0 10px 25px rgba(45, 212, 191, 0.4);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 2500; /* Header-dən aşağı, modaldan aşağı */
 }
 
-.logout-icon-btn:hover {
-    background: #ef4444;
-    color: white;
+.talkjs-launcher:hover {
+    transform: scale(1.1) translateY(-5px);
+    box-shadow: 0 15px 30px rgba(45, 212, 191, 0.5);
 }
 
+.talkjs-launcher.opened {
+    background: #1f2937; /* Pəncərə açılanda rəngi tündləşsin */
+    color: #fff;
+    transform: rotate(90deg);
+}
+
+/* Kiçik bildiriş nöqtəsi (opsional) */
+.talkjs-launcher::after {
+    content: '';
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 12px;
+    height: 12px;
+    background: #ff4d4d;
+    border: 2px solid #fff;
+    border-radius: 50%;
+}
