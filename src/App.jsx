@@ -1,4 +1,3 @@
-// src/App.jsx
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Header from './Components/Header';
 import MainPage from './Pages/mainPage';
@@ -10,7 +9,6 @@ import { useData } from './Context/DataContext';
 function App() {
   const { user } = useData();
 
-  // Login və Signup səhifələrində Header/Chat gizlət
   const isAuthPage = window.location.pathname.includes('/login') || window.location.pathname.includes('/signup');
 
   return (
@@ -18,7 +16,6 @@ function App() {
       {user && !isAuthPage && <Header />}
 
       <Routes>
-        {/* App.html açılan kimi Login-ə atır, əgər user yoxdursa */}
         <Route path="/" element={user ? <Navigate to="/dashboard" /> : <Navigate to="/login" />} />
         
         <Route path="/login" element={user ? <Navigate to="/dashboard" /> : <AuthPage mode="login" />} />

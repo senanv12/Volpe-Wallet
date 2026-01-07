@@ -6,17 +6,16 @@ import { useSettings } from '../Context/SettingsContext';
 import './css/TransferModal.css';
 
 const TransferModal = ({ isOpen, onClose, recipient }) => {
-  // 1. Context-ləri təhlükəsiz çağırırıq
+
   const data = useData();
   const settings = useSettings();
 
-  // Əgər Context hələ yüklənməyibsə, heç nə göstərmə (Xətanın qarşısını alır)
+
   if (!data || !settings) return null;
 
   const { cards, refreshData } = data;
   const { currentSymbol } = settings;
-  
-  // Safe Cards: Kartlar yoxdursa boş massiv götür ki, map xəta verməsin
+
   const safeCards = Array.isArray(cards) ? cards : [];
 
   const [username, setUsername] = useState('');
@@ -25,10 +24,10 @@ const TransferModal = ({ isOpen, onClose, recipient }) => {
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState({ type: '', text: '' });
 
-  // Modal açılanda işləyən hissə
+
   useEffect(() => {
     if (isOpen) {
-      // Recipient varsa adını yaz, yoxdursa boş qoy
+
       if (recipient && recipient.username) {
         setUsername(recipient.username);
       } else {
@@ -40,12 +39,12 @@ const TransferModal = ({ isOpen, onClose, recipient }) => {
     }
   }, [isOpen, recipient]);
 
-  // Kart seçimi
+
   const toggleCard = (cardId) => {
     setSelectedCards(prev => ({ ...prev, [cardId]: !prev[cardId] }));
   };
 
-  // Hesablama Məntiqi
+
   const calculateDistribution = () => {
     const target = Number(amount);
     if (!target || target <= 0) return { valid: false, sources: [], missing: 0 };
@@ -53,12 +52,12 @@ const TransferModal = ({ isOpen, onClose, recipient }) => {
     let remaining = target;
     const sources = [];
     
-    // Yalnız seçilmiş kartları filtrləyirik
+
     const mySelectedCards = safeCards.filter(c => selectedCards[c._id]);
 
     for (const card of mySelectedCards) {
         if (remaining <= 0) break;
-        const available = Number(card.balance || 0); // Balans yoxdursa 0 götür
+        const available = Number(card.balance || 0); 
         const take = Math.min(available, remaining);
         
         if (take > 0) {
@@ -98,14 +97,14 @@ const TransferModal = ({ isOpen, onClose, recipient }) => {
     }
   };
 
-  // Əgər modal bağlıdırsa, heç nə render etmə
+
   if (!isOpen) return null;
 
   return (
     <div className="modal-overlay">
       <div className="modal-content glass-effect">
         <div className="modal-header">
-          {/* Təhlükəsiz başlıq: recipient yoxdursa xəta verməsin */}
+    
           <h3>
              {recipient?.name ? `Transfer: ${recipient.name}` : 'Kartla Transfer'}
           </h3>
@@ -113,7 +112,7 @@ const TransferModal = ({ isOpen, onClose, recipient }) => {
         </div>
 
         <form onSubmit={handleTransfer} className="modal-body">
-          {/* USERNAME INPUT */}
+
           <div className="input-group">
             <label>Qəbul edən (@username)</label>
             <div className="input-wrapper">
@@ -123,12 +122,11 @@ const TransferModal = ({ isOpen, onClose, recipient }) => {
                 placeholder="@dostun" 
                 value={username} 
                 onChange={e => setUsername(e.target.value)} 
-                // Əgər axtarışdan gəlibsə, dəyişməyə icazə veririk, amma default dolu gəlir
+
               />
             </div>
           </div>
 
-          {/* MƏBLƏĞ */}
           <div className="input-group">
             <label>Məbləğ ({currentSymbol})</label>
             <div className="input-wrapper">
@@ -140,7 +138,7 @@ const TransferModal = ({ isOpen, onClose, recipient }) => {
             </div>
           </div>
 
-          {/* KART SEÇİMİ (LIST) */}
+
           <div className="cards-selection-area">
             <p className="selection-title">Ödəniş mənbələrini seçin:</p>
             
@@ -170,7 +168,7 @@ const TransferModal = ({ isOpen, onClose, recipient }) => {
                 )}
             </div>
 
-            {/* STATUS BAR */}
+  
             {amount > 0 && safeCards.length > 0 && (
                 <div className={`status-indicator ${valid ? 'success' : 'warning'}`}>
                     {valid 

@@ -1,4 +1,4 @@
-/* src/Pages/css/LandingPage.css */
+
 
 :root {
     --bg-color: #0D1117; 
@@ -18,7 +18,6 @@
     overflow-x: hidden;
 }
 
-/* Naviqasiya */
 .landing-nav {
     display: flex;
     justify-content: space-between;
@@ -58,7 +57,6 @@
     color: black;
 }
 
-/* Hero Section */
 .landing-hero {
     height: 100vh;
     width: 100%;
@@ -104,12 +102,11 @@
     margin: 0 auto 40px auto;
 }
 
-/* Kart Wrapper (Ortada fırlanan) */
 .hero-card-wrapper {
     position: absolute;
     width: 320px;
     height: 200px;
-    top: 130%; /* Başlanğıcda aşağıda */
+    top: 130%;
     left: 50%;
     transform: translate(-50%, -50%) perspective(1000px) rotateX(40deg);
     z-index: 5;
@@ -123,7 +120,7 @@
     box-sizing: border-box;
 }
 
-/* Dekorativ Lentlər */
+
 .hero-ribbon {
     position: absolute;
     width: 100%;
@@ -135,7 +132,6 @@
 .ribbon-left { background: #7c3aed; top: 20%; left: -20%; }
 .ribbon-right { background: #2dd4bf; bottom: 10%; right: -20%; }
 
-/* Volpe Feature Section */
 .volpe-section {
     min-height: 100vh;
     background: #0D1117;
@@ -198,7 +194,6 @@
     overflow: hidden;
 }
 
-/* Footer */
 .landing-footer {
     padding: 60px 40px;
     border-top: 1px solid rgba(255,255,255,0.1);

@@ -1,7 +1,7 @@
 const Message = require('../models/Message');
 const User = require('../models/User');
 
-// Mesaj Göndər
+
 exports.sendMessage = async (req, res) => {
   const { recipientId, text } = req.body;
   
@@ -13,7 +13,7 @@ exports.sendMessage = async (req, res) => {
       recipient: recipientId,
       text
     });
-    // Mesajı yaradandan sonra dərhal populate edirik
+
     const populatedMsg = await Message.findById(msg._id).populate('sender', 'name avatar');
     
     res.status(201).json(populatedMsg);
@@ -22,7 +22,7 @@ exports.sendMessage = async (req, res) => {
   }
 };
 
-// Söhbəti Gətir (Mesajlar)
+
 exports.getConversation = async (req, res) => {
   const { userId } = req.params;
   try {
@@ -42,10 +42,10 @@ exports.getConversation = async (req, res) => {
   }
 };
 
-// İstifadəçiləri Gətir (Siyahı üçün - ƏSAS DÜZƏLİŞ BURADADIR)
+
 exports.getChatUsers = async (req, res) => {
     try {
-        // Mənim iştirak etdiyim bütün mesajları tap
+
         const messages = await Message.find({
             $or: [{ sender: req.user.id }, { recipient: req.user.id }]
         })
@@ -58,11 +58,10 @@ exports.getChatUsers = async (req, res) => {
         messages.forEach(msg => {
             if (!msg.sender || !msg.recipient) return;
 
-            // Məntiq: Mən senderəmsə -> Recipienti götür. Mən Recipientəmsə -> Senderi götür.
+
             const isMeSender = msg.sender._id.toString() === req.user.id.toString();
             const otherUser = isMeSender ? msg.recipient : msg.sender;
 
-            // Özümüzü siyahıya salmayaq (Ehtiyat üçün)
             if (otherUser._id.toString() === req.user.id.toString()) return;
 
             if (!usersMap.has(otherUser._id.toString())) {

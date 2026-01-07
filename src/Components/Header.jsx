@@ -47,7 +47,7 @@ function Header() {
     <header className="header">
       <div className="header-wrapper">
         
-        {/* LOGO - icon.png tətbiqi */}
+
         <div className={`header-logo ${isMobileSearchOpen ? 'hide-on-mobile' : ''}`} onClick={() => navigate('/dashboard')}>
            <div className="volpe-logo-box">
               <img src="/assets/icon.png" alt="Volpe Icon" className="volpe-brand-img" />
@@ -55,14 +55,14 @@ function Header() {
            <span className="volpe-logo-text">VOLPE</span>
         </div>
 
-        {/* MOBİL AXTARIŞ İKONU */}
+
         {!isMobileSearchOpen && (
           <button className="mobile-search-trigger" onClick={() => setIsMobileSearchOpen(true)}>
             <Search size={22} />
           </button>
         )}
 
-        {/* SEARCH BAR */}
+
         <div className={`header-search ${isMobileSearchOpen ? 'mobile-active' : ''}`} ref={searchRef}>
            <div className="search-input-wrapper">
              <Search className="search-icon" size={18} />
@@ -96,7 +96,7 @@ function Header() {
            )}
         </div>
 
-        {/* SAĞ TƏRƏF (Profil və Çıxış ayrı düymələrdə) */}
+
         <div className={`header-actions ${isMobileSearchOpen ? 'hide-on-mobile' : ''}`}>
            <button className="btn-glass" onClick={() => setLanguage(language === 'AZ' ? 'EN' : 'AZ')}>
               <Globe size={18} /> <span>{language}</span>

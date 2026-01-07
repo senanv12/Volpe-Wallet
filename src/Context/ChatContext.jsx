@@ -10,12 +10,12 @@ export const ChatProvider = ({ children }) => {
   const [chats, setChats] = useState([]);
   const [activeChat, setActiveChat] = useState(null);
 
-  // İstifadəçi daxil olubsa, siyahını yüklə
+
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user'));
     if (user) {
        fetchChatList();
-       // Hər 5 saniyədən bir yeni mesajları yoxla
+
        const interval = setInterval(fetchChatList, 5000);
        return () => clearInterval(interval);
     }
@@ -30,31 +30,31 @@ export const ChatProvider = ({ children }) => {
     } catch (e) { console.error(e); }
   };
 
-  // --- ƏSAS DÜZƏLİŞ BURADADIR ---
+
   const startChat = (targetUser) => {
     if (!targetUser) return;
-    setIsOpen(true); // Çat pəncərəsini aç
+    setIsOpen(true); 
     
-    // 1. Siyahıda bu adam varmı?
+   
     const existingChat = chats.find(c => c._id === targetUser._id);
     
     if (existingChat) {
-        // Varsa, onu aktiv et
+   
         setActiveChat(existingChat);
     } else {
-        // Yoxdursa, müvəqqəti obyekt yarat
+
         const newChat = {
             _id: targetUser._id,
             name: targetUser.name,
             username: targetUser.username,
             avatar: targetUser.avatar,
-            messages: [] // Boş mesaj siyahısı
+            messages: [] 
         };
         
-        // Aktiv et
+   
         setActiveChat(newChat);
         
-        // Siyahıya əlavə et (əgər artıq yoxdursa)
+
         setChats(prev => {
             if (prev.find(p => p._id === newChat._id)) return prev;
             return [newChat, ...prev];
@@ -62,7 +62,7 @@ export const ChatProvider = ({ children }) => {
     }
   };
 
-  // Mesaj göndərmək
+
   const sendMessage = async (text) => {
     if (!activeChat || !text.trim()) return;
     try {
@@ -71,20 +71,19 @@ export const ChatProvider = ({ children }) => {
             text 
         });
         
-        // Mesaj gedən kimi ekranda göstər
+   
         setActiveChat(prev => ({
             ...prev,
             messages: [...(prev.messages || []), data]
         }));
         
-        // Siyahını arxa planda yenilə
+    
         fetchChatList();
     } catch (e) { 
         alert("Mesaj göndərilə bilmədi. İnterneti yoxlayın."); 
     }
   };
 
-  // Aktiv çatı yeniləmək (Real-vaxt mesajları görmək üçün)
   useEffect(() => {
       let isMounted = true;
       if (activeChat?._id && isOpen) {
@@ -94,7 +93,7 @@ export const ChatProvider = ({ children }) => {
                   if (isMounted) {
                       setActiveChat(prev => {
                           if (prev && prev._id === activeChat._id) {
-                              // Yalnız mesaj sayı dəyişibsə yenilə (performans üçün)
+                          
                               const prevLen = prev.messages ? prev.messages.length : 0;
                               if (Array.isArray(data) && data.length !== prevLen) {
                                   return { ...prev, messages: data };
@@ -105,8 +104,8 @@ export const ChatProvider = ({ children }) => {
                   }
               } catch (error) { console.error(error); }
           };
-          fetchMsgs(); // İlk açılan kimi yüklə
-          const interval = setInterval(fetchMsgs, 3000); // Hər 3 saniyədən bir yoxla
+          fetchMsgs(); 
+          const interval = setInterval(fetchMsgs, 3000); 
           return () => { clearInterval(interval); isMounted = false; };
       }
   }, [activeChat?._id, isOpen]);

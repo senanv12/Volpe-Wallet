@@ -19,5 +19,5 @@ const protect = async (req, res, next) => {
   }
 };
 
-// Export mütləq belə olmalıdır:
+
 module.exports = { protect };

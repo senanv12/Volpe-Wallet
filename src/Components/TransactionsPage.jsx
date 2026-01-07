@@ -1,6 +1,6 @@
 import React from 'react';
 import TransactionScroller from './TransactionScroller';
-import ConverterCard from './ConverterCard'; // <--- Yeni komponent
+import ConverterCard from './ConverterCard'; 
 import './css/TransactionsPage.css';
 
 const TransactionsPage = () => {
@@ -15,15 +15,12 @@ const TransactionsPage = () => {
             </p>
         </div>
         
-        {/* YENİ LAYOUT: SOL və SAĞ */}
         <div className="tp-split-layout">
             
-            {/* SOL TƏRƏF: Magic Converter */}
             <div className="tp-left">
                 <ConverterCard />
             </div>
 
-            {/* SAĞ TƏRƏF: Market Scroller */}
             <div className="tp-right">
                 <div className="market-label">Bazar İcmalı</div>
                 <TransactionScroller />

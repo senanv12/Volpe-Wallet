@@ -4,29 +4,26 @@ const Card = require('../models/Card');
 const Message = require('../models/Message');
 const Notification = require('../models/Notification');
 
-// ======================================================
-// 1. PUL KÖÇÜRMƏ (TRANSFER)
-// ======================================================
 exports.transferMoney = async (req, res) => {
   try {
     const { receiverUsername, amount, sources } = req.body;
     const sender = req.user; 
 
-    // --- 1. SENDER YOXLAMASI ---
+
     if (!sender) return res.status(401).json({ message: 'Sessiya bitib.' });
     if (!amount || amount <= 0) return res.status(400).json({ message: 'Məbləğ düzgün deyil.' });
     if (!sources || !Array.isArray(sources) || sources.length === 0) {
         return res.status(400).json({ message: 'Kart seçilməyib.' });
     }
 
-    // --- 2. RECEIVER YOXLAMASI ---
+
     const receiver = await User.findOne({ username: receiverUsername });
     if (!receiver) return res.status(404).json({ message: 'Qəbul edən tapılmadı.' });
     if (sender._id.toString() === receiver._id.toString()) {
         return res.status(400).json({ message: 'Özünüzə pul göndərə bilməzsiniz.' });
     }
 
-    // --- 3. KART ƏMƏLİYYATLARI ---
+  
     let totalDeducted = 0;
 
     for (const source of sources) {
@@ -36,8 +33,7 @@ exports.transferMoney = async (req, res) => {
             throw new Error(`Kart tapılmadı (ID: ${source.cardId})`);
         }
 
-        // --- DEBUG HİSSƏSİ: ID-ləri yoxlayırıq ---
-        // Card.js modelində sahə adı 'user'-dir.
+
         const cardOwnerId = card.user ? card.user.toString() : 'Yoxdur';
         const currentUserId = sender._id.toString();
 
@@ -48,8 +44,7 @@ exports.transferMoney = async (req, res) => {
         console.log(`----------------\n`);
 
         if (cardOwnerId !== currentUserId) {
-            // Əgər ID-lər fərqlidirsə, deməli bu kart köhnə userdə qalıb.
-            // Amma yenə də xətanı yumşaldırıq (Test üçün)
+   
             throw new Error(`'${card.cardNumber.slice(-4)}' sonluqlu kart sizə aid deyil (Köhnə hesabdan qalmış ola bilər). Zəhmət olmasa kartı silib yenidən əlavə edin.`);
         }
         
@@ -59,23 +54,23 @@ exports.transferMoney = async (req, res) => {
             throw new Error(`${card.bankName || 'Kart'} balansında vəsait çatmır.`);
         }
 
-        // Balansdan çıx
+
         card.balance -= deductVal;
         await card.save();
         
         totalDeducted += deductVal;
     }
 
-    // --- YEKUN ---
+
     if (Math.abs(totalDeducted - Number(amount)) > 0.01) {
         throw new Error('Sistem xətası: Məbləğ uyğunsuzluğu.');
     }
 
-    // Qəbul edənə əlavə et
+
     receiver.walletBalance += Number(amount);
     await receiver.save();
 
-    // Tarixçə
+
     const transaction = await Transaction.create({
       user: sender._id,
       recipient: receiver._id,
@@ -85,7 +80,7 @@ exports.transferMoney = async (req, res) => {
       description: `@${receiver.username} istifadəçisinə`
     });
 
-    // Mesaj
+
     await Message.create({
         sender: sender._id,
         recipient: receiver._id,
@@ -93,7 +88,7 @@ exports.transferMoney = async (req, res) => {
         read: false
     });
 
-    // Bildiriş
+
     await Notification.create({
         recipient: receiver._id,
         sender: sender._id,

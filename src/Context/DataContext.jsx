@@ -5,18 +5,17 @@ const DataContext = createContext();
 
 export const DataProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [cards, setCards] = useState([]); // Başlanğıc boş array
+  const [cards, setCards] = useState([]); 
 
-  // Məlumatları gətirən funksiyanı useCallback ilə yaradaq
+
   const fetchInitialData = useCallback(async () => {
     try {
       const storedUser = JSON.parse(localStorage.getItem('user'));
       if (storedUser) {
-        // Kartları serverdən çəkirik
         const { data } = await api.get('/cards');
         setCards(data);
         setUser(storedUser);
-        return data; // Məlumatları qaytarırıq ki, await edə bilək
+        return data;
       }
     } catch (error) {
       console.error("Məlumat yüklənmə xətası:", error);

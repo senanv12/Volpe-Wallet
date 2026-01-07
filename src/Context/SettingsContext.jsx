@@ -19,7 +19,6 @@ export const SettingsProvider = ({ children }) => {
     { code: 'RUB', symbol: '₽' }
   ];
 
-  // 1. Tərcümələri yüklə
   useEffect(() => {
     const fetchTranslations = async () => {
       setLoadingLang(true);
@@ -36,7 +35,7 @@ export const SettingsProvider = ({ children }) => {
     fetchTranslations();
   }, [language]);
 
-  // 2. Valyuta məzənnələrini yüklə
+
   useEffect(() => {
     const fetchRates = async () => {
       try {
@@ -53,7 +52,6 @@ export const SettingsProvider = ({ children }) => {
     localStorage.setItem('appCurrency', currency);
   }, [currency]);
 
-  // 3. Tərcümə Funksiyası (Fallback ilə)
   const t = (key) => {
     const fallbacks = {
       greeting_hello: "Salam",

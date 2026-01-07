@@ -1,9 +1,7 @@
-/* --- ProfilePage.css --- */
 
-/* Səhifənin Əsas Konteyneri */
 .profile-page-wrapper {
     min-height: 100vh;
-    padding: 120px 20px 40px; /* Header üçün yuxarıdan boşluq */
+    padding: 120px 20px 40px; 
     background-color: #0d1117;
     font-family: 'Inter', sans-serif;
     color: #fff;
@@ -11,7 +9,7 @@
     overflow: hidden;
 }
 
-/* Arxa Fon Ləkələri (Sabit və daha zərif) */
+
 .profile-glow {
     position: fixed;
     width: 600px;
@@ -33,18 +31,16 @@
     pointer-events: none;
 }
 
-/* Əsas Məzmun (Grid Layout) */
 .profile-content {
     max-width: 1100px;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: 320px 1fr; /* Sol: 320px, Sağ: Qalan yer */
+    grid-template-columns: 320px 1fr; 
     gap: 30px;
     position: relative;
     z-index: 1;
 }
 
-/* --- SOL TƏRƏF: KART (Avatar) --- */
 .profile-card {
     background: #161b22;
     border: 1px solid #30363d;
@@ -85,7 +81,6 @@
     border: 4px solid #1f2937;
 }
 
-/* Edit Avatar Düyməsi */
 .edit-avatar-btn {
     position: absolute;
     bottom: 0;
@@ -132,7 +127,7 @@
     border: 1px solid rgba(45, 212, 191, 0.2);
 }
 
-/* Avatar Input Sahəsi (Açılanda) */
+
 .avatar-input-container {
     margin-top: 20px;
     display: flex;
@@ -158,14 +153,13 @@
     color: #0f172a;
 }
 
-/* --- SAĞ TƏRƏF: MƏLUMATLAR --- */
 .details-section {
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
 
-/* info-group (Ağ qutular) */
+
 .info-group {
     background: #161b22;
     border: 1px solid #30363d;
@@ -187,7 +181,6 @@
     color: #fff;
 }
 
-/* Grid Form */
 .info-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -221,7 +214,6 @@
     font-weight: 600;
 }
 
-/* Statistika Kartları */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -265,16 +257,16 @@
     color: #8b949e;
 }
 
-/* Animasiya */
+
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-5px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* --- RESPONSIVE --- */
+
 @media (max-width: 900px) {
     .profile-content {
-        grid-template-columns: 1fr; /* Alt-alta */
+        grid-template-columns: 1fr; 
     }
     .profile-card {
         max-width: 100%;

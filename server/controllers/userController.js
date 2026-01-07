@@ -1,4 +1,4 @@
-const User = require('../models/User'); // User modelinizi buradan çağırın
+const User = require('../models/User'); 
 
 const searchUsers = async (req, res) => {
   try {
@@ -8,13 +8,13 @@ const searchUsers = async (req, res) => {
       return res.status(400).json({ message: "Axtarış sözü daxil edilməyib" });
     }
 
-    // Ad (name) və ya İstifadəçi adına (username) görə axtarış
+
     const users = await User.find({
       $or: [
         { name: { $regex: query, $options: "i" } },
         { username: { $regex: query, $options: "i" } }
       ]
-    }).select("name username avatar _id email"); // Yalnız lazım olanları qaytar
+    }).select("name username avatar _id email"); 
 
     res.json(users);
   } catch (error) {

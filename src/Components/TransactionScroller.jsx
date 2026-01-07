@@ -6,13 +6,12 @@ import { useSettings } from '../Context/SettingsContext';
 import './css/TransactionScroller.css';
 
 const MarketScroller = () => {
-  const { rates, currency } = useSettings(); // Backend-dən gələn Fiat məzənnələri
+  const { rates, currency } = useSettings(); 
   const [marketData, setMarketData] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // 1. KRİPTO VALYUTALAR (CoinGecko API - Pulsuz)
         const cryptoRes = await axios.get(
           'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin,ethereum,binancecoin,solana,ripple,cardano,dogecoin,polkadot&order=market_cap_desc&per_page=8&page=1&sparkline=false'
         );
@@ -27,9 +26,6 @@ const MarketScroller = () => {
           image: coin.image
         }));
 
-        // 2. FİAT VALYUTALAR (Sizin Backend-dən gələn rates əsasında)
-        // Burada 'change' hissəsini simulyasiya edirik, çünki sadə API-lər 24h dəyişimi vermir.
-        // Real görünməsi üçün kiçik təsadüfi rəqəmlər yaradılır.
         const fiatList = [
           { code: 'USD', name: 'US Dollar', rate: rates['USD'] || 1 },
           { code: 'EUR', name: 'Euro', rate: rates['EUR'] || 0.92 },
@@ -42,17 +38,17 @@ const MarketScroller = () => {
           id: f.code,
           name: f.code,
           fullName: f.name,
-          price: (1 / f.rate).toFixed(2), // 1 AZN neçə Xarici valyutadır
-          change: (Math.random() * 2 - 1).toFixed(2), // -1% ilə +1% arası random dəyişim
+          price: (1 / f.rate).toFixed(2), 
+          change: (Math.random() * 2 - 1).toFixed(2), 
           isCrypto: false
         }));
 
-        // Hər ikisini birləşdiririk
+    
         setMarketData([...cryptos, ...fiats]);
 
       } catch (error) {
         console.error("Market data xətası:", error);
-        // Xəta olsa static data göstər
+    
         setMarketData([
            { name: 'BTC', fullName: 'Bitcoin', price: 64000, change: 2.5, isCrypto: true },
            { name: 'ETH', fullName: 'Ethereum', price: 3400, change: -1.2, isCrypto: true },
@@ -62,12 +58,12 @@ const MarketScroller = () => {
     };
 
     fetchData();
-    // 60 saniyədən bir yenilə
+
     const interval = setInterval(fetchData, 60000);
     return () => clearInterval(interval);
   }, [rates]);
 
-  // Sonsuz axın üçün datanı çoxaldırıq
+
   const infiniteData = [...marketData, ...marketData];
 
   return (
@@ -77,7 +73,7 @@ const MarketScroller = () => {
           <motion.div
             animate={{ y: "-50%" }}
             transition={{
-              duration: 30, // Sürəti tənzimləyə bilərsiniz
+              duration: 30, 
               repeat: Infinity,
               ease: "linear",
               repeatType: "loop",
@@ -87,7 +83,7 @@ const MarketScroller = () => {
             {infiniteData.map((item, idx) => (
               <div key={`${item.id}-${idx}`} className="ts-card market-card">
                 
-                {/* Sol Tərəf: İkon və Ad */}
+
                 <div className="market-left">
                     <div className="market-icon">
                         {item.isCrypto && item.image ? (
@@ -102,7 +98,6 @@ const MarketScroller = () => {
                     </div>
                 </div>
 
-                {/* Sağ Tərəf: Qiymət və Dəyişim */}
                 <div className="market-right">
                     <span className="market-price">
                         {item.isCrypto ? `$${item.price.toLocaleString()}` : `${item.price} ₼`}

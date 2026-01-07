@@ -1,32 +1,30 @@
 import React, { useState, useMemo } from 'react';
 import { useData } from '../Context/DataContext';
-import { useSettings } from '../Context/SettingsContext'; // <--- Tərcümə və Valyuta üçün
+import { useSettings } from '../Context/SettingsContext'; 
 import { Camera, Save, CreditCard, Wallet, Calendar, Mail, User, Shield } from 'lucide-react';
 import api from '../api';
 import './css/ProfilePage.css';
 
 const ProfilePage = () => {
   const { user, cards, setUser } = useData();
-  const { t, convertAmount, currentSymbol } = useSettings(); // <--- Ayarlar
+  const { t, convertAmount, currentSymbol } = useSettings(); 
   
   const [isEditingAvatar, setIsEditingAvatar] = useState(false);
   const [newAvatarUrl, setNewAvatarUrl] = useState('');
 
   if (!user) return null;
 
-  // --- HESABLAMALAR ---
-  // 1. Kartların cəmi balansını tapırıq (AZN ilə)
+
   const totalBalanceAZN = useMemo(() => {
     return Array.isArray(cards) 
       ? cards.reduce((sum, card) => sum + (Number(card.balance) || 0), 0) 
       : 0;
   }, [cards]);
 
-  // 2. Seçilmiş valyutaya çeviririk
+
   const displayBalance = convertAmount(totalBalanceAZN).toFixed(2);
   const cardCount = Array.isArray(cards) ? cards.length : 0;
 
-  // --- MƏLUMATLAR ---
   const safeName = user.name || 'İstifadəçi';
   const safeUsername = user.username ? `@${user.username}` : '@username';
   const safeEmail = user.email || 'email@example.com';
@@ -34,7 +32,6 @@ const ProfilePage = () => {
   const safeInitial = safeName.charAt(0).toUpperCase();
   const joinDate = new Date(user.createdAt || Date.now()).toLocaleDateString('az-AZ', { year: 'numeric', month: 'long' });
 
-  // Avatar Yeniləmə
   const handleUpdateAvatar = async () => {
     if (!newAvatarUrl) return;
     try {
@@ -56,7 +53,6 @@ const ProfilePage = () => {
 
       <div className="profile-content">
         
-        {/* --- SOL PANEL (Profil Kartı) --- */}
         <div className="profile-card animate-fade-in">
             <div className="avatar-wrapper">
                 {safeAvatar ? (
@@ -92,10 +88,8 @@ const ProfilePage = () => {
             <div className="profile-status-badge">Pro {t('account') || "Hesab"}</div>
         </div>
 
-        {/* --- SAĞ PANEL --- */}
         <div className="details-section">
             
-            {/* Statistika (Artıq Canlıdır) */}
             <div className="stats-grid">
                 <div className="stat-card">
                     <div className="stat-icon"><CreditCard size={24} /></div>
@@ -107,7 +101,6 @@ const ProfilePage = () => {
                 <div className="stat-card">
                     <div className="stat-icon"><Wallet size={24} /></div>
                     <div className="stat-info">
-                        {/* Daxili Balans = Volpe Kart Balansı */}
                         <h4>{displayBalance} {currentSymbol}</h4>
                         <p>{t('stat_balance')}</p>
                     </div>
@@ -121,7 +114,7 @@ const ProfilePage = () => {
                 </div>
             </div>
 
-            {/* Şəxsi Məlumatlar */}
+
             <div className="info-group">
                 <div className="group-header">
                     <h3>{t('profile_personal') || "Şəxsi Məlumatlar"}</h3>
