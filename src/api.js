@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+// Əgər .env oxunmasa, birbaşa localhost:5000 istifadə et
 const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 const api = axios.create({

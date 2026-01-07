@@ -1,68 +1,36 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const cors = require('cors');
-const User = require('./models/User'); // Model yolunu yoxlayın
+const dotenv = require('dotenv');
+const connectDB = require('./db');
+const cardRoutes = require('./routes/cardRoutes');
+const authRoutes = require('./routes/authRoutes');
 
+dotenv.config();
 const app = express();
+
+// MongoDB bağlantısı
+connectDB().catch(() => console.log("⚠️ Offline rejim aktivdir."));
+
 app.use(cors());
 app.use(express.json());
 
-// MongoDB Qoşulması (volpeDB bazasına)
-mongoose.connect('mongodb://localhost:27017/volpeDB')
-  .then(() => console.log("MongoDB-yə uğurla qoşuldu!"))
-  .catch((err) => console.error("Qoşulma xətası:", err));
-
-// --- 1. LIVE SEARCH ROUTE (Dinamik route-lardan yuxarıda olmalıdır) ---
-app.get('/api/users/search', async (req, res) => {
-  try {
-    const { query } = req.query;
-    if (!query || query.length < 2) {
-      return res.status(400).json({ message: "Axtarış üçün minimum 2 hərf yazın." });
-    }
-
-    const users = await User.find({
-      $or: [
-        { name: { $regex: query, $options: "i" } },
-        { username: { $regex: query, $options: "i" } }
-      ]
-    }).select("name username avatar _id").limit(10);
-
-    res.json(users);
-  } catch (error) {
-    res.status(500).json({ message: "Serverdə axtarış xətası baş verdi." });
-  }
+// Qonaq girişi
+app.post('/api/auth/guest-login', (req, res) => {
+  res.json({
+    _id: "guest_12345",
+    name: "Qonaq İstifadəçi",
+    username: "guest_volpe",
+    email: "guest@volpe.com",
+    walletBalance: 1000,
+    avatar: "https://cdn-icons-png.flaticon.com/512/149/149071.png",
+    token: "guest_token_secret_2025",
+    isGuest: true
+  });
 });
 
-// --- 2. SIGNUP ROUTE (Async funksiya ilə) ---
-app.post('/api/users/signup', async (req, res) => {
-  try {
-    const { fullName, email, password, username } = req.body;
-    
-    // İstifadəçini yarat və await ilə yadda saxla
-    const newUser = new User({ name: fullName, email, password, username });
-    const savedUser = await newUser.save();
-    
-    res.status(201).json(savedUser);
-  } catch (error) {
-    res.status(400).json({ message: "Qeydiyyat xətası: " + error.message });
-  }
-});
+// Marşrutlar (Routes)
+app.use('/api/auth', authRoutes); // LOGIN/SIGNUP BURADADIR
+app.use('/api/cards', cardRoutes);
 
-// --- 3. LOGIN ROUTE ---
-app.post('/api/users/login', async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    const user = await User.findOne({ email, password });
-    
-    if (user) {
-      res.json(user);
-    } else {
-      res.status(401).json({ message: "E-poçt və ya şifrə səhvdir." });
-    }
-  } catch (error) {
-    res.status(500).json({ message: "Login xətası." });
-  }
-});
-
-const PORT = 5000;
-app.listen(PORT, () => console.log(`Server ${PORT} portunda işləyir...`));
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`🚀 Server ${PORT} portunda aktivdir.`));

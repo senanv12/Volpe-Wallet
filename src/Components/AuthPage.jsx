@@ -57,54 +57,53 @@ const AuthPage = ({ mode }) => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
+  e.preventDefault();
+  setLoading(true);
+  setError('');
 
-    // --- CİDDİ VALIDASİYA (BURASI VACİBDİR) ---
-    if (isLogin) {
-        // Login üçün sadəcə email və şifrə lazımdır
-        if (!formData.email || !formData.password) {
-            setError("E-poçt və şifrəni daxil edin.");
-            setLoading(false);
-            return;
-        }
-    } else {
-        // Signup üçün HAMISI lazımdır (xüsusilə username)
-        if (!formData.fullName || !formData.email || !formData.password || !formData.username) {
-            setError("Bütün sahələri, o cümlədən istifadəçi adını doldurun.");
-            setLoading(false);
-            return;
-        }
-    }
-
-    try {
-      const endpoint = isLogin ? '/users/login' : '/users/signup';
-      
-      const payload = isLogin 
-        ? { email: formData.email, password: formData.password }
-        : { 
-            fullName: formData.fullName, 
-            username: formData.username, 
-            email: formData.email, 
-            password: formData.password 
-          };
-        
-      const { data } = await api.post(endpoint, payload);
-      
-      localStorage.setItem('user', JSON.stringify(data));
-      if (setUser) setUser(data);
-      if (fetchInitialData) await fetchInitialData();
-      
-      navigate('/dashboard');
-
-    } catch (err) {
-      console.error("Auth Error:", err);
-      setError(err.response?.data?.message || 'Xəta baş verdi.');
-    } finally {
+  if (isLogin) {
+    if (!formData.email || !formData.password) {
+      setError("E-poçt və şifrəni daxil edin.");
       setLoading(false);
+      return;
     }
-  };
+  } else {
+    if (!formData.fullName || !formData.email || !formData.password || !formData.username) {
+      setError("Bütün sahələri doldurun.");
+      setLoading(false);
+      return;
+    }
+  }
+
+  try {
+    // DÜZƏLİŞ: endpoint '/auth' olmalıdır, çünki serverdə '/api/auth' yazılıb
+    const endpoint = isLogin ? '/auth/login' : '/auth/signup';
+    
+    const payload = isLogin 
+      ? { email: formData.email, password: formData.password }
+      : { 
+          fullName: formData.fullName, 
+          username: formData.username, 
+          email: formData.email, 
+          password: formData.password 
+        };
+      
+    // api.js-də baseURL artıq '/api' əlavə etdiyi üçün bura sadəcə endpoint gəlir
+    const { data } = await api.post(endpoint, payload);
+    
+    localStorage.setItem('user', JSON.stringify(data));
+    if (setUser) setUser(data);
+    if (fetchInitialData) await fetchInitialData();
+    
+    navigate('/dashboard');
+
+  } catch (err) {
+    console.error("Auth Error:", err);
+    setError(err.response?.data?.message || 'Xəta baş verdi. Serverin aktiv olduğundan əmin olun.');
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="auth-wrapper">

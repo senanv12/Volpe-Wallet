@@ -3,16 +3,12 @@ const router = express.Router();
 const { getCards, addCard, deleteCard } = require('../controllers/cardController');
 const { protect } = require('../middleware/authMiddleware');
 
-// Debugging (Xəta varsa terminalda göstərəcək)
-if (!getCards) console.error("XƏTA: getCards funksiyası tapılmadı! cardController.js faylını yoxlayın.");
-if (!addCard) console.error("XƏTA: addCard funksiyası tapılmadı! cardController.js faylını yoxlayın.");
-if (!protect) console.error("XƏTA: protect funksiyası tapılmadı! authMiddleware.js faylını yoxlayın.");
-
+// Route-lar
 router.route('/')
-  .get(protect, getCards)
-  .post(protect, addCard);
+  .get(protect, getCards)   // GET /api/cards
+  .post(protect, addCard);  // POST /api/cards
 
 router.route('/:id')
-  .delete(protect, deleteCard);
+  .delete(protect, deleteCard); // DELETE /api/cards/:id
 
 module.exports = router;
